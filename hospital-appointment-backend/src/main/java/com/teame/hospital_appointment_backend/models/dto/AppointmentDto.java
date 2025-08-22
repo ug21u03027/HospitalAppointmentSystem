@@ -15,6 +15,7 @@ public class AppointmentDto {
     private Long id;
     private Long patient_id;
     private Long doctor_id;
+    private String symptoms;
     private LocalDate date;
     private LocalTime time;
     private AppointmentStatus status;
