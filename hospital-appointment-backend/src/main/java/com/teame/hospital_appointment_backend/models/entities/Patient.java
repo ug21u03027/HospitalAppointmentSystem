@@ -21,8 +21,6 @@ public class Patient {
 
     private String contact;
 
-    private String symptoms;
-
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
