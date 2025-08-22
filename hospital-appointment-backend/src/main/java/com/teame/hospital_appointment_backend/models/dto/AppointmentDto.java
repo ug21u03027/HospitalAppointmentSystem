@@ -13,8 +13,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class AppointmentDto {
     private Long id;
-    private Long patient_id;
-    private Long doctor_id;
+    private Long patientId;
+    private Long doctorId;
     private String symptoms;
     private LocalDate date;
     private LocalTime time;

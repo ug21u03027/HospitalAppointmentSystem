@@ -1,0 +1,49 @@
+-- ===================================
+-- Users
+-- ===================================
+INSERT INTO users (username, email, password, role, created_at) VALUES
+('ujjwal', 'ujjwal@example.com', 'password123', 'PATIENT', NOW()),
+('aman', 'aman@example.com', 'password123', 'PATIENT', NOW()),
+('rohit', 'rohit@example.com', 'password123', 'PATIENT', NOW()),
+('drkumar', 'dr.kumar@example.com', 'password123', 'DOCTOR', NOW()),
+('drmehta', 'dr.mehta@example.com', 'password123', 'DOCTOR', NOW()),
+('drrao', 'dr.rao@example.com', 'password123', 'DOCTOR', NOW());
+
+-- ===================================
+-- Doctors
+-- ===================================
+INSERT INTO doctors (name, specialization, availability, phone, consultation_fee, user_id) VALUES
+('Dr. A. Kumar', 'Cardiology', 'Mon-Fri 9am-5pm', '9123456780', 500.0, 4),
+('Dr. S. Mehta', 'Dermatology', 'Mon-Wed 10am-4pm', '9123456781', 400.0, 5),
+('Dr. P. Rao', 'Neurology', 'Tue-Fri 11am-6pm', '9123456782', 600.0, 6);
+
+-- ===================================
+-- Patients
+-- ===================================
+INSERT INTO patients (name, age, contact, user_id) VALUES
+('Ujjwal Gupta', 23, '9876543210', 1),
+('aman Sharma', 22, '9876543211', 2),
+('Rohit Singh', 25, '9876543212', 3);
+
+-- ===================================
+-- Appointments
+-- ===================================
+-- Doctor 1
+INSERT INTO appointments (patient_id, doctor_id, date, time, symptoms, status, created_at) VALUES
+(1, 1, '2025-08-25', '10:00:00', 'Chest pain', 'PENDING', NOW()),
+(2, 1, '2025-08-26', '11:00:00', 'Shortness of breath', 'APPROVED', NOW());
+
+-- Doctor 2
+INSERT INTO appointments (patient_id, doctor_id, date, time, symptoms, status, created_at) VALUES
+(1, 2, '2025-08-25', '09:30:00', 'Skin rash', 'PENDING', NOW()),
+(3, 2, '2025-08-27', '10:30:00', 'Allergy', 'APPROVED', NOW());
+
+-- Doctor 3
+INSERT INTO appointments (patient_id, doctor_id, date, time, symptoms, status, created_at) VALUES
+(2, 3, '2025-08-26', '14:00:00', 'Headache', 'PENDING', NOW()),
+(3, 3, '2025-08-28', '15:30:00', 'Dizziness', 'APPROVED', NOW());
+
+-- Extra to ensure each patient has 2 appointments
+INSERT INTO appointments (patient_id, doctor_id, date, time, symptoms, status, created_at) VALUES
+(1, 3, '2025-08-29', '11:00:00', 'Migraine', 'PENDING', NOW()),
+(2, 2, '2025-08-30', '12:00:00', 'Acne', 'APPROVED', NOW());
