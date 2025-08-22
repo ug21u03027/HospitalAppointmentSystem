@@ -27,5 +27,6 @@ public class AppointmentService {
     }
 
     public List<AppointmentDto> getDoctorAppointments(Long doctorId) {
+        return null;
     }
 }
