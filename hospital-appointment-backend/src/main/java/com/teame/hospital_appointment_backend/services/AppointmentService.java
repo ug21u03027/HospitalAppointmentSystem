@@ -78,7 +78,7 @@ public class AppointmentService {
         Doctor doctor = doctorDao.findById(request.getDoctorId())
                 .orElseThrow(() -> new ResourceNotFoundException("doctor not found"));
 
-        if (!isDoctorAvailable(request.getDoctorId(), request.getDate(), request.getTime()))
+        if (!isSlotAvailable(request.getDoctorId(), request.getDate(), request.getTime()))
             throw new ConflictException("slot not available");
 
         Appointment appointment = new Appointment();
@@ -123,7 +123,7 @@ public class AppointmentService {
         return dto;
     }
 
-    private boolean isDoctorAvailable(Long doctorId,
+    private boolean isSlotAvailable(Long doctorId,
                                       LocalDate appointmentDate,
                                       LocalTime appointmentTime) {
 
