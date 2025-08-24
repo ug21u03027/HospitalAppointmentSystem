@@ -6,10 +6,12 @@ import com.teame.hospital_appointment_backend.dao.UserDao;
 import com.teame.hospital_appointment_backend.models.dto.AuthRequest;
 import com.teame.hospital_appointment_backend.models.dto.AuthResponse;
 import com.teame.hospital_appointment_backend.models.dto.RegisterRequest;
+import com.teame.hospital_appointment_backend.models.dto.UserDto;
 import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import com.teame.hospital_appointment_backend.models.entities.Patient;
 import com.teame.hospital_appointment_backend.models.entities.User;
 import com.teame.hospital_appointment_backend.models.enums.AccountStatus;
+import com.teame.hospital_appointment_backend.models.enums.Role;
 import com.teame.hospital_appointment_backend.security.CustomUserDetails;
 import com.teame.hospital_appointment_backend.util.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -129,4 +131,6 @@ public class AuthService {
         return new AuthResponse(token, savedUser.getUsername(), savedUser.getEmail(),
                 savedUser.getRole(), savedUser.getStatus(), "Registration successful");
     }
+
+
 }
