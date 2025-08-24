@@ -29,6 +29,8 @@ public class Appointment {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
+    private String symptoms;
+
     private LocalDate date;
 
     private LocalTime time;
