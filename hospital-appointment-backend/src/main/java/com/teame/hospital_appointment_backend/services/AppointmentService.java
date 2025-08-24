@@ -54,7 +54,7 @@ public class AppointmentService {
             throw new ResourceNotFoundException("patient not found");
 
         List<Appointment> appointments = appointmentDao
-                .findByPatientPatientIdOrderByDateDescTimeDesc(patientId);
+                .findByPatient_PatientIdOrderByDateDescTimeDesc(patientId);
 
         return appointments.stream().map(this::convertToDto).toList();
     }
@@ -64,7 +64,7 @@ public class AppointmentService {
             throw new ResourceNotFoundException("doctor not found");
 
         List<Appointment> appointments = appointmentDao
-                .findByDoctorDoctorIdOrderByDateDescTimeDesc(doctorId);
+                .findByDoctor_DoctorIdOrderByDateDescTimeDesc(doctorId);
 
         return appointments.stream().map(this::convertToDto).toList();
     }
@@ -128,7 +128,7 @@ public class AppointmentService {
                                       LocalTime appointmentTime) {
 
         List<Appointment> existingAppointments = appointmentDao
-                .findByDoctorDoctorIdAndDateAndTimeAndStatusNot(
+                .findByDoctor_DoctorIdAndDateAndTimeAndStatusNot(
                         doctorId,
                         appointmentDate,
                         appointmentTime,

@@ -11,11 +11,11 @@ import java.util.List;
 
 @Repository
 public interface AppointmentDao extends JpaRepository<Appointment, Long> {
-    List<Appointment> findByDoctorDoctorIdOrderByDateDescTimeDesc(Long doctorId);
+    List<Appointment> findByDoctor_DoctorIdOrderByDateDescTimeDesc(Long doctorId);
 
-    List<Appointment> findByPatientPatientIdOrderByDateDescTimeDesc(Long patientId);
+    List<Appointment> findByPatient_PatientIdOrderByDateDescTimeDesc(Long patientId);
 
-    List<Appointment> findByDoctorDoctorIdAndDateAndTimeAndStatusNot(Long doctorId,
+    List<Appointment> findByDoctor_DoctorIdAndDateAndTimeAndStatusNot(Long doctorId,
                                                                      LocalDate date,
                                                                      LocalTime time,
                                                                      AppointmentStatus status);
