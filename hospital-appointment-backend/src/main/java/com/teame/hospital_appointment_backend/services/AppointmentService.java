@@ -1,6 +1,7 @@
 package com.teame.hospital_appointment_backend.services;
 
 import com.teame.hospital_appointment_backend.Exception.ConflictException;
+import com.teame.hospital_appointment_backend.Exception.ForbiddenException;
 import com.teame.hospital_appointment_backend.Exception.ResourceNotFoundException;
 import com.teame.hospital_appointment_backend.dao.AppointmentDao;
 import com.teame.hospital_appointment_backend.dao.DoctorDao;
@@ -10,7 +11,10 @@ import com.teame.hospital_appointment_backend.models.dto.AppointmentRequest;
 import com.teame.hospital_appointment_backend.models.entities.Appointment;
 import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import com.teame.hospital_appointment_backend.models.entities.Patient;
+import com.teame.hospital_appointment_backend.models.entities.User;
 import com.teame.hospital_appointment_backend.models.enums.AppointmentStatus;
+import com.teame.hospital_appointment_backend.models.enums.Role;
+import com.teame.hospital_appointment_backend.security.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,16 +46,36 @@ public class AppointmentService {
         return appointments.stream().map(this::convertToDto).toList();
     }
 
-    public AppointmentDto getAppointmentById(Long appointmentId) {
+    public AppointmentDto getAppointmentById(Long appointmentId, CustomUserDetails userDetails) {
         Appointment appointment = appointmentDao.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("appointment not found"));
+
+        User currentUser = userDetails.getUser();
+
+        if (currentUser.getRole() == Role.PATIENT &&
+                !appointment.getPatient().getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new ForbiddenException("Access denied: not authorised to view this appointment");
+        }
+
+        if (currentUser.getRole() == Role.DOCTOR &&
+                !appointment.getDoctor().getUser().getUserId().equals(currentUser.getUserId())) {
+            throw new ForbiddenException("Access denied: not authorised to view this appointment");
+        }
+
+        // Admin can view all
         return convertToDto(appointment);
     }
 
 
-    public List<AppointmentDto> getPatientAppointments(Long patientId) {
-        if (!patientDao.existsById(patientId))
-            throw new ResourceNotFoundException("patient not found");
+    public List<AppointmentDto> getPatientAppointments(Long patientId, CustomUserDetails userDetails) {
+
+        Patient patient=patientDao.findById(patientId)
+                .orElseThrow(()-> new ResourceNotFoundException("patient not found"));
+
+        if((!patient.getUser().getUserId().equals(userDetails.getUser().getUserId()))
+                &&!(userDetails.getUser().getRole().equals(Role.ADMIN))){
+            throw new ForbiddenException("access denied: not authorised to view these appointments");
+        }
 
         List<Appointment> appointments = appointmentDao
                 .findByPatient_PatientIdOrderByDateDescTimeDesc(patientId);
@@ -59,9 +83,15 @@ public class AppointmentService {
         return appointments.stream().map(this::convertToDto).toList();
     }
 
-    public List<AppointmentDto> getDoctorAppointments(Long doctorId) {
-        if (!doctorDao.existsById(doctorId))
-            throw new ResourceNotFoundException("doctor not found");
+    public List<AppointmentDto> getDoctorAppointments(Long doctorId, CustomUserDetails userDetails) {
+
+        Doctor doctor = doctorDao.findById(doctorId)
+                .orElseThrow(() -> new ResourceNotFoundException("doctor not found"));
+
+        if ((!doctor.getUser().getUserId().equals(userDetails.getUser().getUserId()))
+                &&(!userDetails.getUser().getRole().equals(Role.ADMIN))) {
+            throw new ForbiddenException("access denied: not authorised to view these appointments");
+        }
 
         List<Appointment> appointments = appointmentDao
                 .findByDoctor_DoctorIdOrderByDateDescTimeDesc(doctorId);
@@ -70,10 +100,13 @@ public class AppointmentService {
     }
 
     @Transactional
-    public AppointmentDto createAppointment(AppointmentRequest request) {
+    public AppointmentDto createAppointment(AppointmentRequest request, CustomUserDetails userDetails) {
 
         Patient patient = patientDao.findById(request.getPatientId())
                 .orElseThrow(() -> new ResourceNotFoundException("patient not found"));
+
+        if(!patient.getUser().getUserId().equals(userDetails.getUser().getUserId()))
+            throw new ForbiddenException("access denied: not authorised to create appointment for requested patient");
 
         Doctor doctor = doctorDao.findById(request.getDoctorId())
                 .orElseThrow(() -> new ResourceNotFoundException("doctor not found"));
@@ -96,15 +129,47 @@ public class AppointmentService {
     }
 
     @Transactional
-    public AppointmentDto updateAppointmentStatus(Long appointmentId, AppointmentStatus status) {
+    public AppointmentDto cancelAppointment(Long appointmentId, CustomUserDetails userDetails) {
+        Appointment appointment = appointmentDao.findById(appointmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("appointment not found"));
+
+        // Only the patient who owns the appointment can cancel
+        if (!appointment.getPatient().getUser().getUserId().equals(userDetails.getUser().getUserId())) {
+            throw new ForbiddenException("access denied: not authorised to cancel this appointment");
+        }
+
+        // Cannot cancel if already REJECTED or CANCELLED
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED ||
+                appointment.getStatus() == AppointmentStatus.REJECTED) {
+            throw new ConflictException("appointment status cannot be changed");
+        }
+
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        return convertToDto(appointmentDao.save(appointment));
+    }
+
+    @Transactional
+    public AppointmentDto approveOrRejectAppointment(Long appointmentId, AppointmentStatus status, CustomUserDetails userDetails) {
+        if (!(status == AppointmentStatus.APPROVED || status == AppointmentStatus.REJECTED)) {
+            throw new IllegalArgumentException("Invalid status for doctor action");
+        }
 
         Appointment appointment = appointmentDao.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("appointment not found"));
 
-        appointment.setStatus(status);
-        Appointment updatedAppointment = appointmentDao.save(appointment);
+        if (!appointment.getDoctor().getUser().getUserId().equals(userDetails.getUser().getUserId())
+                &&!userDetails.getUser().getRole().equals(Role.ADMIN)) {
+            throw new ForbiddenException("access denied: not authorised to update this appointment");
+        }
 
-        return convertToDto(updatedAppointment);
+        // Cannot change if already REJECTED or CANCELLED
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED ||
+                appointment.getStatus() == AppointmentStatus.REJECTED) {
+            throw new ConflictException("appointment status cannot be changed");
+        }
+
+        appointment.setStatus(status);
+        return convertToDto(appointmentDao.save(appointment));
     }
 
 

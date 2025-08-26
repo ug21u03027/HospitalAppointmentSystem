@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserProfile {
     private Long UserId;
     private String name;
     private String username;
@@ -18,6 +18,8 @@ public class UserDto {
     private AccountStatus accountStatus;
 
     //Role specific fields
+    private Long patientId;
+    private Long doctorId;
     private Integer age;
     private String specialization;
     private String availability;
