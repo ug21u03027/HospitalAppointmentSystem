@@ -1,5 +1,6 @@
 package com.teame.hospital_appointment_backend.models.entities;
 
+import com.teame.hospital_appointment_backend.models.enums.AccountStatus;
 import com.teame.hospital_appointment_backend.models.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private AccountStatus status;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

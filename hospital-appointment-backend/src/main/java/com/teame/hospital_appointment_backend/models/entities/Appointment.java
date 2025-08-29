@@ -33,6 +33,8 @@ public class Appointment {
 
     private LocalTime time;
 
+    private String symptoms;
+
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
