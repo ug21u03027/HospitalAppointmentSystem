@@ -4,9 +4,12 @@ import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DoctorDao extends JpaRepository<Doctor,Long> {
-    Optional<Doctor> findByUser_UserId(Long userId);
+public interface DoctorDao extends JpaRepository<Doctor, Long> {
+    List<Doctor> findBySpecializationContainingIgnoreCase(String specialization);
+
+    Optional<Object> findByUser_UserId(Long userId);
 }

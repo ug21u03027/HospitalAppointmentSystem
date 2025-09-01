@@ -32,6 +32,7 @@ public class User {
     private Role role;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20, nullable = false)
     private AccountStatus status;
 
     @CreationTimestamp

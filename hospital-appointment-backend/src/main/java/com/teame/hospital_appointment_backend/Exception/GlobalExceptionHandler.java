@@ -14,6 +14,12 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // 409 Conflict (Username already exists)
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<Map<String, Object>> handleUsernameExists(UsernameAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, request);
+    }
+
 
     // 404 Not Found
     @ExceptionHandler(ResourceNotFoundException.class)
