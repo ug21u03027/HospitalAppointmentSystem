@@ -68,10 +68,21 @@ public class DataSeeder implements CommandLineRunner {
         userDao.save(patientUser3);
 
         // ---- Create Doctors ----
-        Doctor doctor1 = new Doctor(null, "Dr. John Smith", "Cardiology",
-                "Mon-Fri 10:00-16:00", "1234567890", 500.0, doctorUser1);
-        Doctor doctor2 = new Doctor(null, "Dr. Alice Brown", "Dermatology",
-                "Tue-Sat 09:00-15:00", "0987654321", 400.0, doctorUser2);
+        Doctor doctor1 = new Doctor();
+        doctor1.setName("Dr. John Smith");
+        doctor1.setSpecialization("Cardiology");
+        doctor1.setAvailability("Mon-Fri 10:00-16:00");
+        doctor1.setPhone("1234567890");
+        doctor1.setConsultationFee(500.0);
+        doctor1.setUser(doctorUser1);
+
+        Doctor doctor2 = new Doctor();
+        doctor2.setName("Dr. Alice Brown");
+        doctor2.setSpecialization("Dermatology");
+        doctor2.setAvailability("Tue-Sat 09:00-15:00");
+        doctor2.setPhone("0987654321");
+        doctor2.setConsultationFee(400.0);
+        doctor2.setUser(doctorUser2);
 
         doctorDao.save(doctor1);
         doctorDao.save(doctor2);
