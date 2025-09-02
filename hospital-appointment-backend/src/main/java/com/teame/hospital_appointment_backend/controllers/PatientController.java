@@ -1,9 +1,10 @@
 package com.teame.hospital_appointment_backend.controllers;
 
-import com.teame.hospital_appointment_backend.models.entities.Patient;
-import com.teame.hospital_appointment_backend.models.entities.Appointment;
+import com.teame.hospital_appointment_backend.models.dto.PatientDto;
+import com.teame.hospital_appointment_backend.models.dto.PatientUpdateRequest;
 import com.teame.hospital_appointment_backend.security.CustomUserDetails;
 import com.teame.hospital_appointment_backend.services.PatientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,40 +13,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patients")
+@RequestMapping("/api/patients")
 public class PatientController {
 
     private final PatientService patientService;
 
+    @Autowired
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
 
-    // GET /patients/{id}
+    // GET api/patients/{id}
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
-    public ResponseEntity<Patient> getPatientById(@PathVariable Long id,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Patient patient = patientService.getPatientById(id, userDetails);
-        return ResponseEntity.ok(patient);
+    public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id,
+                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
+        PatientDto patientDto = patientService.getPatientById(id, userDetails);
+        return ResponseEntity.ok(patientDto);
     }
 
-    // PUT /patients/{id}
+    // PUT api/patients/{id}
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
-    public ResponseEntity<Patient> updatePatient(@PathVariable Long id,
-                                                 @RequestBody Patient updatedPatient,
+    public ResponseEntity<PatientDto> updatePatient(@PathVariable Long id,
+                                                 @RequestBody PatientUpdateRequest updateRequest,
                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Patient patient = patientService.updatePatient(id, updatedPatient, userDetails);
-        return ResponseEntity.ok(patient);
+        PatientDto patientDto = patientService.updatePatient(id, updateRequest, userDetails);
+        return ResponseEntity.ok(patientDto);
     }
 
-    // GET /patients/{id}/appointments
-    @GetMapping("/{id}/appointments")
-    @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
-    public ResponseEntity<List<Appointment>> getPatientAppointments(@PathVariable Long id,
-                                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
-        List<Appointment> appointments = patientService.getAppointmentsByPatient(id, userDetails);
-        return ResponseEntity.ok(appointments);
-    }
 }
