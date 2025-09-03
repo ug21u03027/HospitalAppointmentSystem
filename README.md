@@ -26,11 +26,9 @@ The **Hospital Appointment Booking System** is a Spring Boot backend API that al
 
 ## 🧑‍⚕️ Doctor Endpoints
 
-- **Register Doctor** → `POST /api/doctors/register`  
 - **Get Doctor by ID** → `GET /api/doctors/{id}`  
 - **Update Doctor** → `PUT /api/doctors/{id}?currentUserId={id}&currentUserRole={role}`  
 - **Delete Doctor** → `DELETE /api/doctors/{id}?currentUserId={id}&currentUserRole={role}`  
-- **Approve Doctor** → `PUT /api/doctors/approve/{id}`  
 - **Get All Doctors (with optional filter by specialization)** → `GET /api/doctors?specialization={specialization}`  
 
 ---
