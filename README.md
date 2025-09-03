@@ -55,21 +55,21 @@ The **Hospital Appointment Booking System** is a Spring Boot backend API that al
 
 ---
 
-##🔒 Roles & Permissions
+## 🔒 Roles & Permissions
 
-##Admin
+## Admin
 
 Manage users (activate/block)
 
 View all appointments
 
-##Doctor
+## Doctor
 
 Manage profile & availability
 
 Approve/Reject/Cancel appointments
 
-##Patient
+## Patient
 
 Book/Cancel appointments
 
@@ -77,7 +77,7 @@ View own appointments
 
 ---
 
-📌 Notes
+## 📌 Notes
 
 All responses are in JSON format.
 
@@ -85,7 +85,7 @@ Authentication uses JWT tokens returned from /api/auth/login or /api/auth/regist
 
 ---
 
-🚀 Technologies Used
+## 🚀 Technologies Used
 
 Spring Boot
 
