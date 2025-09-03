@@ -47,7 +47,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Publicly accessible endpoints
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/login"
+                                , "/api/auth/register"
+                                , "/swagger-ui.html"
+                                , "/swagger-ui/**"
+                                , "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/doctors/register").permitAll()
 
                         // Role-based access

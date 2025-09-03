@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class PatientService {
 
-    private final com.teame.hospital_appointment_backend.dao.PatientDao patientRepository;
+    private final PatientDao patientRepository;
 
     @Autowired
-    public PatientService(com.teame.hospital_appointment_backend.dao.PatientDao patientRepository) {
+    public PatientService(PatientDao patientRepository) {
         this.patientRepository = patientRepository;
     }
 
