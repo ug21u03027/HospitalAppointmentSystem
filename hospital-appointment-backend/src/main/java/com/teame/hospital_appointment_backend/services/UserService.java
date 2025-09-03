@@ -1,7 +1,8 @@
 package com.teame.hospital_appointment_backend.services;
 
+import com.teame.hospital_appointment_backend.Exception.BadRequestException;
 import com.teame.hospital_appointment_backend.Exception.ResourceNotFoundException;
-import com.teame.hospital_appointment_backend.Exception.UsernameAlreadyExistsException;
+import com.teame.hospital_appointment_backend.Exception.UnauthorizedException;
 import com.teame.hospital_appointment_backend.dao.DoctorDao;
 import com.teame.hospital_appointment_backend.dao.PatientDao;
 import com.teame.hospital_appointment_backend.dao.UserDao;
@@ -9,11 +10,13 @@ import com.teame.hospital_appointment_backend.models.dto.UserProfile;
 import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import com.teame.hospital_appointment_backend.models.entities.Patient;
 import com.teame.hospital_appointment_backend.models.entities.User;
+import com.teame.hospital_appointment_backend.models.enums.AccountStatus;
 import com.teame.hospital_appointment_backend.models.enums.Role;
 import com.teame.hospital_appointment_backend.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,9 +31,7 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    // -----------------------
-    // Profile Handling
-    // -----------------------
+
     public UserProfile getProfile(CustomUserDetails userDetails) {
         User user = userDetails.getUser();
         return convertToDto(user);
@@ -66,51 +67,83 @@ public class UserService {
         return userProfile;
     }
 
-    // -----------------------
-    // Persistence
-    // -----------------------
 
-    public User save(User user) {
-        return userDao.save(user);
-    }
-
-    public Optional<User> findByUsername(String username) {
-        return userDao.findByUsername(username);
-    }
-
-    public Optional<User> findByEmail(String email) {
-        return userDao.findByEmail(email);
-    }
-
-    public boolean existsByUsername(String username) {
-        return userDao.existsByUsername(username);
-    }
-
-    public boolean existsByEmail(String email) {
-        return userDao.existsByEmail(email);
-    }
-
-    // -----------------------
-    // Registration (NEW)
-    // -----------------------
-    public Doctor registerDoctor(Doctor doctor) {
-        // username duplicate check
-        if (userDao.existsByUsername(doctor.getUser().getUsername())) {
-            throw new UsernameAlreadyExistsException("Username already taken!");
+    public List<UserProfile> getAllUsers(CustomUserDetails authUser) {
+        if (!authUser.getUser().getRole().equals(Role.ADMIN)) {
+            throw new UnauthorizedException("Only admins can view all users");
         }
 
-        // email duplicate check
-        if (userDao.existsByEmail(doctor.getUser().getEmail())) {
-            throw new UsernameAlreadyExistsException("Email already registered!");
+        List<User> users = userDao.findAll();
+        return users.stream().map(this::convertToDto).toList();
+    }
+
+
+    public UserProfile activateUser(Long userId, CustomUserDetails authUser) {
+        User user = userDao.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        AccountStatus currentStatus = user.getStatus();
+
+        switch (currentStatus) {
+            case DEACTIVATED -> {
+                // Only the same user can reactivate their own account
+                if (!authUser.getUser().getUserId().equals(userId)) {
+                    throw new UnauthorizedException("You can only reactivate your own account");
+                }
+            }
+            case PENDING, BLOCKED -> {
+                // Only admins can activate pending/blocked accounts
+                if (authUser.getUser().getRole() != Role.ADMIN) {
+                    throw new UnauthorizedException("Only admins can activate this account");
+                }
+            }
+            case ACTIVATED -> {
+                // Already active → no need to throw
+                return convertToDto(user);
+            }
+            default -> throw new BadRequestException("Unsupported account status");
         }
 
-        // Save user first
-        User savedUser = userDao.save(doctor.getUser());
+        user.setStatus(AccountStatus.ACTIVATED);
+        User activatedUser = userDao.save(user);
 
-        // Link doctor with saved user
-        doctor.setUser(savedUser);
-
-        // Save doctor
-        return doctorDao.save(doctor);
+        return convertToDto(activatedUser);
     }
+
+
+
+
+    public UserProfile deactivateUser(Long userId, CustomUserDetails authUser) {
+        User user = userDao.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Only the same user can deactivate their own account
+        if (!authUser.getUser().getUserId().equals(userId)) {
+            throw new UnauthorizedException("You can only deactivate your own account");
+        }
+
+        if (user.getStatus().equals(AccountStatus.DEACTIVATED)) {
+            return convertToDto(user); // Already deactivated, no need to change
+        }
+
+        user.setStatus(AccountStatus.DEACTIVATED);
+        User deactivatedUser = userDao.save(user);
+
+        return convertToDto(deactivatedUser);
+    }
+
+    public UserProfile blockUser(Long userId, CustomUserDetails authUser) {
+        if (!authUser.getUser().getRole().equals(Role.ADMIN)) {
+            throw new UnauthorizedException("Only admins can block users");
+        }
+
+        User user = userDao.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setStatus(AccountStatus.BLOCKED);
+        userDao.save(user);
+
+        return convertToDto(user);
+    }
+
 }
