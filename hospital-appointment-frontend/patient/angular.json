@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "patient": {
+    "hospital-appointment-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -71,10 +71,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "patient:build:production"
+              "buildTarget": "hospital-appointment-frontend:build:production"
             },
             "development": {
-              "buildTarget": "patient:build:development"
+              "buildTarget": "hospital-appointment-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -103,5 +103,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
