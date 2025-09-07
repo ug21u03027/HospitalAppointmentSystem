@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-patient-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
-  templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css']
+  imports: [CommonModule, RouterModule],
+  templateUrl: './patient-dashboard.component.html',
+  styleUrls: ['./patient-dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
-  userName: string = 'Admin';
+export class PatientDashboardComponent implements OnInit {
+  userName: string = 'Guest';
   isLoggedIn: boolean = false;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.checkAuthStatus();
@@ -27,22 +26,14 @@ export class DashboardComponent implements OnInit {
       const role = localStorage.getItem('role');
       const username = localStorage.getItem('username');
       
-      if (!token || role !== 'ADMIN') {
+      if (!token || role !== 'PATIENT') {
         this.router.navigate(['/login']);
         return;
       }
       
       this.isLoggedIn = true;
-      this.userName = username || 'Admin';
+      this.userName = username || 'Patient';
     }
-  }
-
-  navigateDoctors() {
-    this.router.navigate(['/manage-doctors']);
-  }
-
-  navigatePatients() {
-    this.router.navigate(['/manage-patients']);
   }
 
   logout(): void {
@@ -56,4 +47,23 @@ export class DashboardComponent implements OnInit {
     }
     this.router.navigate(['/login']);
   }
+
+  navigateTo(path: string): void {
+    this.router.navigate([`/${path}`]);
+  }
+
+  // Specific navigation methods for better clarity
+  navigateToBookAppointment(): void {
+    this.router.navigate(['/book-appointment']);
+  }
+
+  navigateToAppointments(): void {
+    this.router.navigate(['/appointments']);
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
 }
+
+

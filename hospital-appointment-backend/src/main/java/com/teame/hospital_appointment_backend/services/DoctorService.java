@@ -32,45 +32,10 @@ public class DoctorService {
                 doctor.getSpecialization(),
                 doctor.getAvailability(),
                 doctor.getPhone(),
-                doctor.getConsultationFee(),
-                doctor.getStatus()
+                doctor.getConsultationFee()
         );
     }
 
-    // -------------------------------
-    // Register Doctor (fix duplicates)
-    // -------------------------------
-    public DoctorDTO registerDoctor(Doctor doctor) {
-        User user = doctor.getUser();
-        if (user == null) throw new RuntimeException("Doctor must have a linked User account!");
-
-        // Trim + lowercase for safe duplicate check
-        String usernameClean = user.getUsername().trim().toLowerCase();
-        String emailClean = user.getEmail().trim().toLowerCase();
-
-        if (userDao.findByUsernameIgnoreCase(usernameClean).isPresent()) {
-            throw new RuntimeException("Username already taken!");
-        }
-        if (userDao.findByEmailIgnoreCase(emailClean).isPresent()) {
-            throw new RuntimeException("Email already registered!");
-        }
-
-        // Set defaults
-        user.setUsername(usernameClean);
-        user.setEmail(emailClean);
-        user.setRole(Role.DOCTOR);
-        user.setStatus(AccountStatus.PENDING);
-        doctor.setStatus("PENDING");
-        doctor.setAvailability("NO");
-
-        // Save user first
-        User savedUser = userDao.save(user);
-        doctor.setUser(savedUser);
-
-        // Save doctor
-        Doctor savedDoctor = doctorDao.save(doctor);
-        return convertToDTO(savedDoctor);
-    }
 
     // -------------------------------
     // Update Doctor
@@ -81,8 +46,7 @@ public class DoctorService {
 
         boolean isAdmin = "ADMIN".equals(currentUserRole);
         boolean isOwnProfile = existingDoctor.getUser() != null &&
-                existingDoctor.getUser().getUserId().equals(currentUserId) &&
-                "ACTIVE".equals(existingDoctor.getStatus());
+                existingDoctor.getUser().getUserId().equals(currentUserId);
 
         if (!isAdmin && !isOwnProfile) {
             throw new RuntimeException("Forbidden: cannot update this doctor");
@@ -110,13 +74,11 @@ public class DoctorService {
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
         System.out.println("FOUND DOCTOR => userId=" +
-                (doctor.getUser() != null ? doctor.getUser().getUserId() : null) +
-                ", status=" + doctor.getStatus());
+                (doctor.getUser() != null ? doctor.getUser().getUserId() : null));
 
         boolean isAdmin = currentUserRole != null && currentUserRole.toUpperCase().contains("ADMIN");
         boolean isOwnProfile = doctor.getUser() != null &&
-                doctor.getUser().getUserId().equals(currentUserId) &&
-                "ACTIVE".equals(doctor.getStatus());
+                doctor.getUser().getUserId().equals(currentUserId);
 
         System.out.println("CHECK => isAdmin=" + isAdmin + ", isOwnProfile=" + isOwnProfile);
 
@@ -127,25 +89,6 @@ public class DoctorService {
         doctorDao.deleteById(doctorId);
     }
 
-    // Approve Doctor
-    // -------------------------------
-    public DoctorDTO approveDoctor(Long id) {
-        Doctor doctor = doctorDao.findById(id)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
-
-        doctor.setStatus("ACTIVE");
-        doctor.setAvailability("YES");
-        Doctor updatedDoctor = doctorDao.save(doctor);
-
-        // Update linked User
-        User user = doctor.getUser();
-        if (user != null) {
-            user.setStatus(AccountStatus.ACTIVATED);
-            userDao.save(user);
-        }
-
-        return convertToDTO(updatedDoctor);
-    }
 
     // -------------------------------
     // Get Doctor by ID

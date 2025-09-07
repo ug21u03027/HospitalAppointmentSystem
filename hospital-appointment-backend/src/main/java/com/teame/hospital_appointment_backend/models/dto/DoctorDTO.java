@@ -14,5 +14,4 @@ public class DoctorDTO {
     private String availability;
     private String phone;
     private Double consultationFee;
-    private String status;
 }

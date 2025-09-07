@@ -1,24 +1,123 @@
 <div class="signup-wrapper">
   <div class="signup-card">
-    <h1 class="signup-title">Hospital Management System</h1>
-    <p class="signup-subtitle">Create your account</p>
-
-    <div class="input-group">
-      <input type="text" [(ngModel)]="name" placeholder="Full Name" />
-    </div>
-    <div class="input-group">
-      <input type="email" [(ngModel)]="email" placeholder="Enter your email" />
-    </div>
-    <div class="input-group">
-      <input type="password" [(ngModel)]="password" placeholder="Enter your password" />
+    <div class="signup-header">
+      <h1 class="signup-title">Create Account</h1>
+      <p class="signup-subtitle">Join the Hospital Management System</p>
     </div>
 
-    <button class="signup-btn" (click)="signup()">Signup</button>
+    <form class="signup-form" [formGroup]="registerForm" (ngSubmit)="signup()">
+      <!-- Basic Information Section -->
+      <div class="form-section">
+        <h3>Basic Information</h3>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="username">Username *</label>
+            <input id="username" type="text" formControlName="username" placeholder="Enter username" />
+            <span class="error-message" *ngIf="showError('username')">{{ fieldError('username') }}</span>
+          </div>
+          <div class="input-group">
+            <label for="email">Email *</label>
+            <input id="email" type="email" formControlName="email" placeholder="Enter email address" />
+            <span class="error-message" *ngIf="showError('email')">{{ fieldError('email') }}</span>
+          </div>
+        </div>
 
-    <p [style.color]="messageColor" style="margin-top:10px">{{ message }}</p>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="password">Password *</label>
+            <input id="password" type="password" formControlName="password" placeholder="Enter password" />
+            <span class="small-muted">Minimum 6 characters with number and special character</span>
+            <span class="error-message" *ngIf="showError('password')">{{ fieldError('password') }}</span>
+          </div>
+          <div class="input-group">
+            <label for="role">Role *</label>
+            <select id="role" formControlName="role">
+              <option value="" disabled>Select your role</option>
+              <option value="PATIENT">Patient</option>
+              <option value="DOCTOR">Doctor</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+            <span class="error-message" *ngIf="showError('role')">{{ fieldError('role') }}</span>
+          </div>
+        </div>
 
-    <p class="login-link">
-      Already have an account? <a [routerLink]="['/']">Go to Login</a>
-    </p>
+        <div class="input-group">
+          <label for="name">Full Name</label>
+          <input id="name" type="text" formControlName="name" placeholder="Enter your full name" />
+          <span class="error-message" *ngIf="showError('name')">{{ fieldError('name') }}</span>
+        </div>
+      </div>
+
+      <!-- Patient Specific Fields -->
+      <div class="form-section" *ngIf="registerForm.get('role')?.value === 'PATIENT'">
+        <h3>Patient Information</h3>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="age">Age *</label>
+            <input id="age" type="number" formControlName="age" placeholder="Enter your age" min="1" max="150" />
+            <span class="error-message" *ngIf="showError('age')">{{ fieldError('age') }}</span>
+          </div>
+          <div class="input-group">
+            <label for="contact">Contact Number *</label>
+            <input id="contact" type="tel" formControlName="contact" placeholder="10-digit contact number" />
+            <span class="error-message" *ngIf="showError('contact')">{{ fieldError('contact') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctor Specific Fields -->
+      <div class="form-section" *ngIf="registerForm.get('role')?.value === 'DOCTOR'">
+        <h3>Doctor Information</h3>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="specialization">Specialization *</label>
+            <input id="specialization" type="text" formControlName="specialization" placeholder="e.g., Cardiology, Neurology" />
+            <span class="error-message" *ngIf="showError('specialization')">{{ fieldError('specialization') }}</span>
+          </div>
+          <div class="input-group">
+            <label for="availability">Availability</label>
+            <input id="availability" type="text" formControlName="availability" placeholder="e.g., Mon-Fri 9-5" />
+            <span class="error-message" *ngIf="showError('availability')">{{ fieldError('availability') }}</span>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="input-group">
+            <label for="phone">Phone Number *</label>
+            <input id="phone" type="tel" formControlName="phone" placeholder="10-digit phone number" />
+            <span class="error-message" *ngIf="showError('phone')">{{ fieldError('phone') }}</span>
+          </div>
+          <div class="input-group">
+            <label for="consultationFee">Consultation Fee (₹) *</label>
+            <input id="consultationFee" type="text" inputmode="decimal" formControlName="consultationFee" placeholder="Enter consultation fee" />
+            <span class="error-message" *ngIf="showError('consultationFee')">{{ fieldError('consultationFee') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="btn-group">
+        <button type="submit" class="btn-primary" [disabled]="!isSubmittable()">
+          <i class="fa-solid fa-user-check"></i>
+          Register
+        </button>
+        <a class="btn-secondary" [routerLink]="['/login']">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          Back to Login
+        </a>
+      </div>
+
+      <!-- Error Summary -->
+      <div *ngIf="submitted && getFormErrors().length" class="form-errors">
+        <h4>Please correct the following errors:</h4>
+        <ul>
+          <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+        </ul>
+      </div>
+
+      <!-- Success/Error Message -->
+      <div *ngIf="message" class="message" [ngClass]="messageColor === 'red' ? 'error' : 'success'">
+        {{ message }}
+      </div>
+    </form>
   </div>
 </div>
