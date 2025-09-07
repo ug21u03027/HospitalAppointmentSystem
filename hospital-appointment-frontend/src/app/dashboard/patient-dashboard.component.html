@@ -1,0 +1,100 @@
+<div class="patient-dashboard">
+  <div class="container">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <div class="nav-breadcrumb">
+        <i class="fa-solid fa-home"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-user-info">
+        <span class="user-greeting">Welcome, {{ userName || 'Patient' }}!</span>
+        <button class="btn btn-outline btn-sm" (click)="logout()">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Patient Dashboard</h1>
+      <p class="dashboard-subtitle">Manage your appointments and profile information</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-actions">
+      <button class="btn btn-primary" (click)="navigateToBookAppointment()">
+        <i class="fa-solid fa-calendar-plus"></i>
+        Book Appointment
+      </button>
+      <button class="btn btn-secondary" (click)="navigateToAppointments()">
+        <i class="fa-solid fa-list"></i>
+        View Appointments
+      </button>
+      <button class="btn btn-secondary" (click)="navigateToProfile()">
+        <i class="fa-solid fa-user-gear"></i>
+        Edit Profile
+      </button>
+    </div>
+
+    <!-- Quick Stats (Optional) -->
+    <div class="quick-stats">
+      <div class="stat-item">
+        <div class="stat-icon">
+          <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="stat-number">3</div>
+        <div class="stat-label">Upcoming Appointments</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <i class="fa-solid fa-user-md"></i>
+        </div>
+        <div class="stat-number">2</div>
+        <div class="stat-label">Doctors Consulted</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div class="stat-number">5</div>
+        <div class="stat-label">Total Visits</div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Cards -->
+    <div class="grid-cards">
+      <div class="card-option"
+           (click)="navigateToBookAppointment()"
+           tabindex="0" 
+           role="button" 
+           aria-label="Book Appointment">
+        <i class="fa-solid fa-calendar-plus"></i>
+        <h3>Book Appointment</h3>
+        <p>Schedule a new appointment with your preferred doctor</p>
+      </div>
+
+      <div class="card-option"
+           (click)="navigateToAppointments()"
+           tabindex="0" 
+           role="button" 
+           aria-label="View Appointments">
+        <i class="fa-solid fa-list"></i>
+        <h3>View Appointments</h3>
+        <p>Check your upcoming and past appointments</p>
+      </div>
+
+      <div class="card-option"
+           (click)="navigateToProfile()"
+           tabindex="0" 
+           role="button" 
+           aria-label="Edit Profile">
+        <i class="fa-solid fa-user-edit"></i>
+        <h3>Edit Profile</h3>
+        <p>Update your personal information and preferences</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+

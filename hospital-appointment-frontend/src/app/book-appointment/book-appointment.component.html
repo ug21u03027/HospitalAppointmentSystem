@@ -1,0 +1,96 @@
+<div class="book-appointment">
+  <div class="container">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <div class="nav-breadcrumb">
+        <button class="btn btn-outline btn-sm" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to Dashboard
+        </button>
+      </div>
+      <div class="nav-user-info">
+        <span class="page-title">Book Appointment</span>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Book Appointment</h1>
+      <p>Schedule a new appointment with your preferred doctor</p>
+    </div>
+
+    <!-- Error and Success Messages -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fa-solid fa-check-circle"></i>
+      {{ successMessage }}
+    </div>
+
+    <div class="appointment-form">
+      <form [formGroup]="appointmentForm" (ngSubmit)="onBook()">
+        <!-- Doctor Selection Section -->
+        <div class="form-section">
+          <h3>Select Doctor</h3>
+          <div class="doctor-grid">
+            <div *ngFor="let doc of doctors" 
+                 class="doctor-card"
+                 [class.selected]="appointmentForm.get('doctorId')?.value === doc.doctorId"
+                 (click)="selectDoctor(doc.doctorId)">
+              <div class="doctor-info">
+                <h4>{{ doc.name }}</h4>
+                <p class="doctor-specialty">{{ doc.specialization }}</p>
+                <p>{{ doc.availability }}</p>
+                <p><strong>Fee: ₹{{ doc.consultationFee }}</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date and Time Selection -->
+        <div class="form-section" *ngIf="appointmentForm.get('doctorId')?.value">
+          <h3>Select Date & Time</h3>
+          <div class="form-grid">
+            <div class="input-group">
+              <label for="date">Appointment Date *</label>
+              <input id="date" type="date" formControlName="date" [min]="today" />
+            </div>
+            <div class="input-group">
+              <label for="time">Preferred Time *</label>
+              <select id="time" formControlName="time" required>
+                <option value="" disabled>Select Time</option>
+                <option *ngFor="let t of availableTimes" [value]="t">{{ t }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="form-section">
+          <h3>Symptoms & Reason for Visit *</h3>
+          <div class="input-group">
+            <label for="symptoms">Please describe your symptoms or reason for the appointment</label>
+            <textarea id="symptoms" formControlName="symptoms" placeholder="Please describe your symptoms or reason for the appointment..." required></textarea>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button class="btn btn-primary" type="submit" [disabled]="appointmentForm.invalid || isLoading">
+            <i *ngIf="!isLoading" class="fa-solid fa-calendar-plus"></i>
+            <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
+            {{ isLoading ? 'Booking...' : 'Book Appointment' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="isLoading">
+            <i class="fa-solid fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

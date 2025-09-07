@@ -1,84 +1,155 @@
-/* Full screen gradient background */
+/* Login Page Layout */
 .login-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #4da6ff, #1a75ff);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  padding: 2rem 1rem;
 }
 
-/* Centered white card */
+/* Login Card */
 .login-card {
-  background: #fff;
-  padding: 40px 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  width: 380px;
+  background: var(--card-bg);
+  padding: 3rem 2.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 420px;
   text-align: center;
+  border: 1px solid var(--border-light);
 }
 
-/* Title & subtitle */
+/* Header */
+.login-header {
+  margin-bottom: 2rem;
+}
+
 .login-title {
-  color: #1a75ff;
-  margin-bottom: 8px;
+  color: var(--primary);
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
 }
 
 .login-subtitle {
-  color: #555;
-  margin-bottom: 25px;
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin: 0;
 }
 
-/* Input fields */
+/* Form */
+.login-form {
+  text-align: left;
+}
+
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
 }
 
 .input-group input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  transition: border 0.3s;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  background: #fbfdff;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
 }
 
 .input-group input:focus {
-  border-color: #1a75ff;
-  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 117, 255, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-1px);
 }
 
-/* Login button */
+/* Login Button */
 .login-btn {
   width: 100%;
-  padding: 14px;
-  background-color: #1a75ff;
-  color: #fff;
+  padding: 0.875rem 1.5rem;
+  background: var(--primary);
+  color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s ease;
+  margin-bottom: 1.5rem;
 }
 
-.login-btn:hover {
-  background-color: #005ce6;
+.login-btn:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
-/* Signup link */
-.signup-link {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #000;
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.signup-link a {
-  color: #1a75ff;
-  text-decoration: none;
+/* Message */
+.message {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
+.message.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.message.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+/* Signup Link */
+.signup-link {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.signup-link a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
 .signup-link a:hover {
+  color: var(--primary-dark);
   text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 1rem 0.5rem;
+  }
+  
+  .login-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .login-title {
+    font-size: 1.75rem;
+  }
 }

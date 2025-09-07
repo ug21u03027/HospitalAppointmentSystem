@@ -23,7 +23,7 @@ public class Doctor {
     private String availability;
 
     private String phone;
-    private String status = "PENDING";
+
     private Double consultationFee;
 
     @OneToOne
