@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { HospitalService, Patient } from '../services/hospital';
+import { HospitalService } from '../services/hospital';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,10 +17,11 @@ export class Login {
   constructor(
     private fb: FormBuilder,
     private hospitalService: HospitalService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required]],
       password: ['', Validators.required],
       remember: [false]
     });
@@ -31,18 +33,22 @@ export class Login {
   onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    const patients = this.hospitalService.getPatients();
-    const email = this.loginForm.value.email;
-    const password = this.loginForm.value.password;
-
-    const patient = patients.find(p => p.email === email && p.password === password);
-
-    if (patient) {
-      this.hospitalService.setCurrentPatient(patient);
-      this.router.navigate(['/dashboard']);
-    } else {
-      alert('Invalid email or password. Please try again or register.');
-    }
+    const { username, password } = this.loginForm.value;
+    this.authService.login({ username, password }).subscribe({
+      next: (res) => {
+        const role = res.role;
+        if (role === 'ADMIN') {
+          this.router.navigate(['/admin-dashboard']);
+        } else if (role === 'DOCTOR') {
+          this.router.navigate(['/doctor-dashboard']);
+        } else {
+          this.router.navigate(['/patient-dashboard']);
+        }
+      },
+      error: () => {
+        alert('Login failed. Please check your credentials.');
+      }
+    });
   }
   navigateTo(page: string) {
     this.router.navigate([`/${page}`]);
