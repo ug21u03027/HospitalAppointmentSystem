@@ -1,0 +1,167 @@
+<div class="appointments-page">
+  <div class="container">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <div class="nav-breadcrumb">
+        <button class="btn btn-outline btn-sm" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to Dashboard
+        </button>
+      </div>
+      <div class="nav-user-info">
+        <span class="page-title">Appointments</span>
+      </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="appointments-header">
+      <h1 class="appointments-title">Your Appointments</h1>
+      <p class="appointments-subtitle">Manage your scheduled visits and medical appointments</p>
+    </div>
+
+    <!-- Error and Success Messages -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fa-solid fa-check-circle"></i>
+      {{ successMessage }}
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="appointments-filters">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'all'"
+        (click)="filterAppointments('all')">
+        <i class="fa-solid fa-list"></i> All
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'upcoming'"
+        (click)="filterAppointments('upcoming')">
+        <i class="fa-solid fa-clock"></i> Upcoming
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'approved'"
+        (click)="filterAppointments('approved')">
+        <i class="fa-solid fa-check"></i> Approved
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'cancelled'"
+        (click)="filterAppointments('cancelled')">
+        <i class="fa-solid fa-times"></i> Cancelled
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'rejected'"
+        (click)="filterAppointments('rejected')">
+        <i class="fa-solid fa-ban"></i> Rejected
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'completed'"
+        (click)="filterAppointments('completed')">
+        <i class="fa-solid fa-check-double"></i> Completed
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <p>Loading appointments...</p>
+    </div>
+
+    <!-- Appointments Table -->
+    <div *ngIf="!isLoading" class="appointments-container">
+      <ng-container *ngIf="filteredAppointments && filteredAppointments.length > 0; else noAppointments">
+        <div class="table-container">
+          <table class="appointments-table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Symptoms</th>
+                <th>Status</th>
+                <th>Fee</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let appointment of filteredAppointments" class="appointment-row">
+                <td class="doctor-cell">
+                  <div class="doctor-info">
+                    <strong>{{ getDoctorName(appointment.doctorId) }}</strong>
+                  </div>
+                </td>
+                <td class="specialization-cell">
+                  {{ getDoctorSpecialization(appointment.doctorId) }}
+                </td>
+                <td class="date-cell">
+                  {{ formatDate(appointment.date) }}
+                </td>
+                <td class="time-cell">
+                  {{ formatTime(appointment.time) }}
+                </td>
+                <td class="symptoms-cell">
+                  <div class="symptoms-text" [title]="appointment.symptoms">
+                    {{ appointment.symptoms.length > 50 ? (appointment.symptoms | slice:0:50) + '...' : appointment.symptoms }}
+                  </div>
+                </td>
+                <td class="status-cell">
+                  <span class="status-badge" [ngClass]="getStatusClass(appointment.status)">
+                    <i class="fa-solid" [ngClass]="getStatusIcon(appointment.status)"></i>
+                    {{ appointment.status }}
+                  </span>
+                </td>
+                <td class="fee-cell">
+                  ₹{{ getDoctorFee(appointment.doctorId) }}
+                </td>
+                <td class="actions-cell">
+                  <div class="action-buttons">
+                    <button 
+                      *ngIf="canCancelAppointment(appointment)"
+                      class="btn btn-danger btn-sm" 
+                      (click)="cancelAppointment(appointment)"
+                      [disabled]="isLoading"
+                      title="Cancel Appointment">
+                      <i class="fa-solid fa-times"></i>
+                      Cancel
+                    </button>
+                    <button 
+                      *ngIf="canRescheduleAppointment(appointment)"
+                      class="btn btn-secondary btn-sm" 
+                      (click)="rescheduleAppointment(appointment)"
+                      title="Reschedule Appointment">
+                      <i class="fa-solid fa-calendar-plus"></i>
+                      Reschedule
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #noAppointments>
+        <div class="no-appointments">
+          <i class="fa-solid fa-calendar-xmark"></i>
+          <h3>No Appointments Found</h3>
+          <p *ngIf="selectedFilter === 'all'">You don't have any appointments scheduled yet.</p>
+          <p *ngIf="selectedFilter !== 'all'">No appointments found for the selected filter.</p>
+          <button class="btn btn-primary" (click)="bookNewAppointment()">
+            <i class="fa-solid fa-calendar-plus"></i>
+            Book Your First Appointment
+          </button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

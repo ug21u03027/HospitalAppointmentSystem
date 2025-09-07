@@ -1,32 +1,69 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
-export interface User {
-  name: string;
+export interface LoginRequest { username: string; password: string; }
+export interface AuthResponse {
+  accessToken: string | null;
+  tokenType: string | null;
+  userId: number;
+  username: string;
+  email: string;
+  role: 'ADMIN' | 'PATIENT' | 'DOCTOR' | 'USER';
+  status?: string;
+  message?: string;
+}
+export interface RegisterRequest {
+  username: string;
   email: string;
   password: string;
+  role: 'ADMIN' | 'PATIENT' | 'DOCTOR' | 'USER';
+  name?: string;
+  age?: number;
+  contact?: string;
+  specialization?: string;
+  availability?: string;
+  phone?: string;
+  consultationFee?: number;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private users: User[] = [];
+  private readonly baseUrl = 'http://localhost:8080/api/auth';
 
-  register(user: User) {
-    const exists = this.users.find(u => u.email === user.email);
-    if (exists) {
-      return { success: false, message: 'User already exists. Please login.' };
-    }
-    this.users.push(user);
-    return { success: true };
+  constructor(private http: HttpClient) {}
+
+  login(payload: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/login`, payload).pipe(
+      tap((res) => {
+        if (!res?.accessToken) return;
+        if (typeof window === 'undefined') return;
+        localStorage.setItem('accessToken', res.accessToken);
+        localStorage.setItem('tokenType', res.tokenType || 'Bearer');
+        localStorage.setItem('role', res.role);
+        localStorage.setItem('username', res.username);
+        localStorage.setItem('email', res.email || '');
+        localStorage.setItem('userId', String(res.userId));
+      })
+    );
   }
 
-  login(email: string, password: string) {
-    const user = this.users.find(u => u.email === email && u.password === password);
-    if (user) {
-      return { success: true };
-    } else {
-      return { success: false, message: 'Invalid credentials. Please sign up first.' };
-    }
+  register(payload: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.baseUrl}/register`, payload);
+  }
+
+  getRole(): AuthResponse['role'] | null {
+    if (typeof window === 'undefined') return null;
+    return (localStorage.getItem('role') as any) || null;
+  }
+
+  logout(): void {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('tokenType');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userId');
   }
 }

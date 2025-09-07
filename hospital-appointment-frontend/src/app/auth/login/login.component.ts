@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthService, LoginRequest } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  email = '';
+  username = '';
   password = '';
   message = '';
   messageColor = 'red';
@@ -20,12 +20,18 @@ export class LoginComponent {
   constructor(private auth: AuthService, private router: Router) {}
 
   login() {
-    const result = this.auth.login(this.email, this.password);
-    if (result.success) {
-      this.router.navigate(['/dashboard']);
-    } else {
-      this.messageColor = 'red';
-      this.message = result.message || '';
-    }
+    const payload: LoginRequest = { username: this.username, password: this.password };
+    this.auth.login(payload).subscribe({
+      next: (res) => {
+        const role = res.role;
+        if (role === 'ADMIN') this.router.navigate(['/admin-dashboard']);
+        else if (role === 'DOCTOR') this.router.navigate(['/doctor-dashboard']);
+        else this.router.navigate(['/patient-dashboard']);
+      },
+      error: () => {
+        this.messageColor = 'red';
+        this.message = 'Invalid credentials.';
+      }
+    });
   }
 }
