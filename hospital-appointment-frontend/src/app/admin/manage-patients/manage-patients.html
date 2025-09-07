@@ -1,0 +1,39 @@
+<div class="page">
+  <h1>Manage Patients</h1>
+
+  <!-- Add or Edit Form -->
+  <div class="form-container">
+<input type="text" [(ngModel)]="currentPatient.name" placeholder="Name" />
+<input type="number" [(ngModel)]="currentPatient.age" placeholder="Age" />
+<input type="email" [(ngModel)]="currentPatient.email" placeholder="Email" />
+
+  <button *ngIf="!editingPatient" (click)="addPatient()">Add Patient</button>
+  <button *ngIf="editingPatient" (click)="updatePatient()">Update Patient</button>
+</div>
+
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let patient of patients">
+        <td>{{ patient.name }}</td>
+        <td>{{ patient.age }}</td>
+        <td>{{ patient.email }}</td>
+        <td>
+          <button (click)="editPatient(patient)">Edit</button>
+          <button (click)="deletePatient(patient.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="back" (click)="goBack()">⬅ Back to Dashboard</button>
+</div>

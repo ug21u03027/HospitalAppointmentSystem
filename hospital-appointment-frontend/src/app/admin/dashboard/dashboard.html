@@ -1,0 +1,32 @@
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">🏥 <span>HMS</span></div>
+    <ul>
+      <li><a routerLink="/dashboard">📊 Dashboard</a></li>
+      <li><a routerLink="/manage-doctors">👨‍⚕️ Manage Doctors</a></li>
+      <li><a routerLink="/manage-patients">🧑‍⚕️ Manage Patients</a></li>
+      <li><a routerLink="/login">🔒 Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Welcome to Hospital Management System</h1>
+    <p>Select an option from the sidebar to continue.</p>
+
+    <div class="cards-container">
+      <div class="card">
+        <h2>Doctors</h2>
+        <p>View and manage doctors</p>
+        <button (click)="navigateDoctors()">Go 👨‍⚕️</button>
+      </div>
+
+      <div class="card">
+        <h2>Patients</h2>
+        <p>View and manage patients</p>
+        <button (click)="navigatePatients()">Go 🧑‍⚕️</button>
+      </div>
+    </div>
+  </div>
+</div>

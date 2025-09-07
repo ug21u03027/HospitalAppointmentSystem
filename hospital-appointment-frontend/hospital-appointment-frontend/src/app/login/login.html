@@ -1,0 +1,140 @@
+<!-- <div class="container-sm">
+<div class="card" role="form" aria-labelledby="loginTitle">
+<div class="header header--dark" id="loginTitle">
+<i class="fa-solid fa-right-to-bracket" style="color:var(--brand)"></i>
+Patient Login
+</div>
+
+
+<form (ngSubmit)="onLogin()" #loginForm="ngForm" novalidate>
+<div class="form-grid form-grid--single">
+<div>
+<label for="email">Email</label>
+<input id="email" name="email" type="email" required [(ngModel)]="email" class="input" autocomplete="username" />
+</div>
+
+
+<div>
+<label for="password">Password</label>
+<div style="position:relative">
+<input id="password" name="password" [type]="showPassword ? 'text' : 'password'" required [(ngModel)]="password" class="input" autocomplete="current-password" style="padding-right:2.5rem"/>
+<button type="button" (click)="showPassword = !showPassword" class="btn" aria-label="Toggle password visibility" style="position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:transparent;padding:.25rem .5rem">
+<i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+</button>
+</div>
+</div>
+</div>
+
+
+<button type="submit" class="btn btn-primary btn-block" style="margin-top:1rem">Login</button>
+</form>
+
+
+<p class="help" style="text-align:center;margin-top:1rem">Don’t have an account? <a routerLink="/register">Register</a></p>
+</div>
+</div> -->
+
+<div class="card" role="region" aria-labelledby="loginTitle">
+  <div class="h-card" id="loginTitle">
+    <i class="fa-solid fa-right-to-bracket"></i>
+    Patient Login
+  </div>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <label for="usernameLogin">Username</label>
+    <input id="usernameLogin" type="text" formControlName="username" />
+
+    <label for="passwordLogin" style="margin-top:0.75rem;">Password</label>
+    <div style="position:relative;">
+      <input id="passwordLogin"
+             [type]="showPassword ? 'text' : 'password'"
+             formControlName="password"
+             style="padding-right:2.8rem;" />
+      <button type="button"
+              (click)="togglePassword()"
+              aria-label="Toggle password"
+              title="Show / hide password"
+              style="position:absolute; right:0.5rem; top:50%; transform:translateY(-50%); border:none; background:transparent; cursor:pointer;">
+        <i [ngClass]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+      </button>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
+      <label class="small-muted" style="display:flex;align-items:center;gap:0.5rem;">
+        <input type="checkbox" formControlName="remember" style="width:16px;height:16px;"> Remember me
+      </label>
+      <a class="small-muted" routerLink="/forgot">Forgot?</a>
+    </div>
+
+    <div style="margin-top:1rem; display:flex; gap:0.75rem;">
+      <button type="submit" class="btn btn-primary flex-1" [disabled]="loginForm.invalid">
+        <i class="fa-solid fa-right-to-bracket"></i> Login
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="navigateTo('register')">Register</button>
+    </div>
+
+    <p class="center small-muted" style="margin-top:0.9rem;">Or login with</p>
+
+    <div style="display:flex;gap:0.5rem; justify-content:center; margin-top:0.5rem;">
+      <button class="btn btn-ghost"><i class="fa-brands fa-google"></i> Google</button>
+      <button class="btn btn-ghost"><i class="fa-brands fa-facebook"></i> Facebook</button>
+    </div>
+  </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="card">
+  <div class="card-header bg-primary text-white text-center py-4">
+    <h3><i class="fas fa-sign-in-alt me-2"></i>Patient Login</h3>
+    <p class="mb-0">Access your hospital account</p>
+  </div>
+  <div class="card-body p-4">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Email *</label>
+        <input type="email" class="form-control" formControlName="email" />
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="text-danger small">
+          Valid email is required.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password *</label>
+        <input type="password" class="form-control" formControlName="password" />
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="text-danger small">
+          Password is required.
+        </div>
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="loginForm.invalid">
+          <i class="fas fa-sign-in-alt me-2"></i>Login
+        </button>
+        <button type="button" class="btn btn-outline-secondary" routerLink="/register">
+          Don't have an account? Register
+        </button>
+      </div>
+    </form>
+  </div>
+</div> -->

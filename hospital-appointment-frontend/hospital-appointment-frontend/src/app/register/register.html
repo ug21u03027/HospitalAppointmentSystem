@@ -1,0 +1,238 @@
+<!-- <div class="card">
+  <div class="header text-[#1E2A38]">
+    <i class="fas fa-user-plus"></i>
+    Patient Registration
+  </div>
+  <form (ngSubmit)="onRegister()" #registerForm="ngForm" novalidate>
+    <label for="fullName">Full Name</label>
+    <input id="fullName" name="fullName" type="text" required [(ngModel)]="fullName" />
+
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" required [(ngModel)]="email" />
+
+    <label for="phone">Phone Number</label>
+    <input id="phone" name="phone" type="tel" required [(ngModel)]="phone" />
+
+    <label for="age">Age</label>
+    <input id="age" name="age" type="number" min="0" required [(ngModel)]="age" />
+
+    <label for="gender">Gender</label>
+    <select id="gender" name="gender" required [(ngModel)]="gender">
+      <option value="" disabled selected>Select Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+
+    <label for="dob">Date of Birth</label>
+    <input id="dob" name="dob" type="date" required [(ngModel)]="dob" />
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" required [(ngModel)]="password" />
+
+    <button type="submit" class="btn-primary mt-6">Register</button>
+  </form>
+  <p class="mt-4 text-center text-sm">
+    Already have an account? <a routerLink="/login" class="text-blue-600">Login</a>
+  </p>
+</div> -->
+
+<div class="card" role="region" aria-labelledby="registerTitle">
+  <div class="h-card" id="registerTitle">
+    <i class="fa-solid fa-user-plus"></i>
+    Create Account
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+      <div>
+        <label for="username">Username *</label>
+        <input id="username" type="text" formControlName="username" />
+        <p class="small-muted" *ngIf="showError('username')">{{ fieldError('username') }}</p>
+      </div>
+      <div>
+        <label for="email">Email *</label>
+        <input id="email" type="email" formControlName="email" />
+        <p class="small-muted" *ngIf="showError('email')">{{ fieldError('email') }}</p>
+      </div>
+    </div>
+
+    <div style="margin-top:0.75rem; display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+      <div>
+        <label for="password">Password *</label>
+        <input id="password" type="password" formControlName="password" />
+        <p class="small-muted" style="margin-top:0.5rem;">Minimum 6 characters</p>
+        <p class="small-muted" *ngIf="showError('password')">{{ fieldError('password') }}</p>
+      </div>
+      <div>
+        <label for="role">Role *</label>
+        <select id="role" formControlName="role">
+          <option value="" disabled>Select role</option>
+          <option value="PATIENT">Patient</option>
+          <option value="DOCTOR">Doctor</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+        <p class="small-muted" *ngIf="showError('role')">{{ fieldError('role') }}</p>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <label for="name">Full Name</label>
+      <input id="name" type="text" formControlName="name" />
+      <p class="small-muted" *ngIf="showError('name')">{{ fieldError('name') }}</p>
+    </div>
+
+    <div style="margin-top:0.75rem;" *ngIf="registerForm.get('role')?.value === 'PATIENT'">
+      <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <div>
+          <label for="age">Age</label>
+          <input id="age" type="number" formControlName="age" />
+          <p class="small-muted" *ngIf="showError('age')">{{ fieldError('age') }}</p>
+        </div>
+        <div>
+          <label for="contact">Contact</label>
+          <input id="contact" type="text" formControlName="contact" />
+          <p class="small-muted" *ngIf="showError('contact')">{{ fieldError('contact') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:0.75rem;" *ngIf="registerForm.get('role')?.value === 'DOCTOR'">
+      <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+        <div>
+          <label for="specialization">Specialization</label>
+          <input id="specialization" type="text" formControlName="specialization" />
+          <p class="small-muted" *ngIf="showError('specialization')">{{ fieldError('specialization') }}</p>
+        </div>
+        <div>
+          <label for="availability">Availability</label>
+          <input id="availability" type="text" formControlName="availability" placeholder="e.g., Mon-Fri 9-5" />
+          <p class="small-muted" *ngIf="showError('availability')">{{ fieldError('availability') }}</p>
+        </div>
+      </div>
+      <div class="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem; margin-top:0.75rem;">
+        <div>
+          <label for="phone">Phone</label>
+          <input id="phone" type="tel" formControlName="phone" />
+          <p class="small-muted" *ngIf="showError('phone')">{{ fieldError('phone') }}</p>
+        </div>
+        <div>
+          <label for="consultationFee">Consultation Fee (₹)</label>
+          <input id="consultationFee" type="text" inputmode="decimal" formControlName="consultationFee" />
+          <p class="small-muted" *ngIf="showError('consultationFee')">{{ fieldError('consultationFee') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:1.15rem; display:flex; gap:0.75rem;">
+      <button type="submit" class="btn btn-primary" [disabled]="!isSubmittable()">
+        <i class="fa-solid fa-user-check"></i> Register
+      </button>
+      <div *ngIf="submitted && getFormErrors().length" class="small-muted" style="margin-top:0.5rem;">
+        <div>Please correct the following:</div>
+        <ul style="margin:0.25rem 0 0 1rem;">
+          <li *ngFor="let e of getFormErrors()">{{ e }}</li>
+        </ul>
+      </div>
+      <button type="button" class="btn btn-secondary" (click)="navigateTo('login')">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Login
+      </button>
+    </div>
+  </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="card">
+  <div class="card-header bg-primary text-white text-center py-4">
+    <h3><i class="fas fa-user-plus me-2"></i>Patient Registration</h3>
+    <p class="mb-0">Create your account to access hospital services</p>
+  </div>
+  <div class="card-body p-4">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-control" formControlName="name" />
+          <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger small">
+            Name is required.
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-control" formControlName="email" />
+          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger small">
+            Valid email is required.
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Phone Number *</label>
+          <input type="tel" class="form-control" formControlName="phone" />
+          <div *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched" class="text-danger small">
+            Phone is required.
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Age *</label>
+          <input type="number" class="form-control" formControlName="age" min="1" />
+          <div *ngIf="registerForm.get('age')?.invalid && registerForm.get('age')?.touched" class="text-danger small">
+            Valid age is required.
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label">Gender *</label>
+          <select class="form-select" formControlName="sex">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+          <div *ngIf="registerForm.get('sex')?.invalid && registerForm.get('sex')?.touched" class="text-danger small">
+            Gender is required.
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Date of Birth *</label>
+          <input type="date" class="form-control" formControlName="dob" />
+          <div *ngIf="registerForm.get('dob')?.invalid && registerForm.get('dob')?.touched" class="text-danger small">
+            Date of birth is required.
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Password *</label>
+          <input type="password" class="form-control" formControlName="password" />
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-danger small">
+            Password is required.
+          </div>
+        </div>
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="registerForm.invalid">
+          <i class="fas fa-user-plus me-2"></i>Register
+        </button>
+        <button type="button" class="btn btn-outline-secondary" routerLink="/login">
+          Already have an account? Login
+        </button>
+      </div>
+    </form>
+  </div>
+</div> -->

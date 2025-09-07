@@ -1,0 +1,84 @@
+/* Full screen gradient background */
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #4da6ff, #1a75ff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Centered white card */
+.login-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  width: 380px;
+  text-align: center;
+}
+
+/* Title & subtitle */
+.login-title {
+  color: #1a75ff;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  color: #555;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+/* Input fields */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #1a75ff;
+  outline: none;
+}
+
+/* Login button */
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #1a75ff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #005ce6;
+}
+
+/* Signup link */
+.signup-link {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #000;
+}
+
+.signup-link a {
+  color: #1a75ff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}

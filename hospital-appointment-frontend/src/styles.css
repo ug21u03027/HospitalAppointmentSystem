@@ -1,0 +1,69 @@
+/* You can add global styles to this file, and also import other style files */
+/* Background for all pages */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Uniform card style */
+.card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  width: 380px;
+  text-align: center;
+}
+
+/* Title text */
+.card h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Input fields */
+.card input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Primary button */
+.btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+/* Link style */
+.link {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
