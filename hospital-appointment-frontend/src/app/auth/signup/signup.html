@@ -1,0 +1,24 @@
+<div class="signup-wrapper">
+  <div class="signup-card">
+    <h1 class="signup-title">Hospital Management System</h1>
+    <p class="signup-subtitle">Create your account</p>
+
+    <div class="input-group">
+      <input type="text" [(ngModel)]="name" placeholder="Full Name" />
+    </div>
+    <div class="input-group">
+      <input type="email" [(ngModel)]="email" placeholder="Enter your email" />
+    </div>
+    <div class="input-group">
+      <input type="password" [(ngModel)]="password" placeholder="Enter your password" />
+    </div>
+
+    <button class="signup-btn" (click)="signup()">Signup</button>
+
+    <p [style.color]="messageColor" style="margin-top:10px">{{ message }}</p>
+
+    <p class="login-link">
+      Already have an account? <a [routerLink]="['/']">Go to Login</a>
+    </p>
+  </div>
+</div>
