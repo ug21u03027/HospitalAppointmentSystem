@@ -1,0 +1,25 @@
+<!-- <div class="container py-4" style="min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <router-outlet></router-outlet>
+</div>  -->
+<!-- App Shell -->
+<!-- <div class="container">
+<div class="header">
+<i class="fa-solid fa-hospital"></i>
+Medicare Hospital Portal
+</div>
+</div>
+<router-outlet></router-outlet> -->
+<!-- app.html -->
+<div>
+  <nav class="app-topnav" role="navigation" aria-label="Main navigation">
+    <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Dashboard</a>
+    <a routerLink="/appointments" routerLinkActive="active">Appointments</a>
+    <a routerLink="/profile" routerLinkActive="active">Profile</a>
+    <a routerLink="/book-appointment" routerLinkActive="active">Book</a>
+    <!-- <a (click)="logout()" class="cursor-pointer">Logout</a> -->
+  </nav>
+
+  <main class="container-narrow" role="main" aria-live="polite">
+    <router-outlet></router-outlet>
+  </main>
+</div>
