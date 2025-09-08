@@ -1,41 +1,93 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { ChunkPipe } from './chunk.pipe';
+import { RouterModule, Router } from '@angular/router';
+import { AuthService, UserProfile } from '../../../services/auth.service';
+import { AppointmentService } from '../../../services/appointment.service';
+import { SpecializationService } from '../../../services/specialization.service';
 
 @Component({
   selector: 'app-doctor-dashboard',
   templateUrl: './doctor-dashboard.component.html',
   styleUrls: ['./doctor-dashboard.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule, ChunkPipe]
+  imports: [FormsModule, CommonModule, RouterModule]
 })
-export class DoctorDashboardComponent {
-  doctors = [
-    { name: 'Dr. Sasikala', specialization: 'Cardiology', phone: '1234567890', email: 'sasikala@gmail.com', experience: 3 },
-    { name: 'Dr. Subha', specialization: 'Neurology', phone: '2345678901', email: 'subha@gmail.com', experience: 3 },
-    { name: 'Dr. Varshitha', specialization: 'Orthopedics', phone: '3456789012', email: 'varshitha@gmail.com', experience: 2 },
-    { name: 'Dr. Subham Rathore', specialization: 'Pediatrics', phone: '4567890123', email: 'subham@gmail.com', experience: 3 },
-    { name: 'Dr. Ujwal Gupta', specialization: 'ENT', phone: '5678901234', email: 'ujwal@gmail.com', experience: 2 },
-    { name: 'Dr. Shashidhar', specialization: 'Psychiatry', phone: '6789012345', email: 'shashidhar@gmail.com', experience: 3 }
-  ];
-  editIndex: number | null = null;
+export class DoctorDashboardComponent implements OnInit {
+  userProfile: UserProfile | null = null;
+  isLoading = false;
+  errorMessage = '';
 
-  enableEdit(index: number) {
-    this.editIndex = index;
+  constructor(
+    private authService: AuthService,
+    private appointmentService: AppointmentService,
+    private specializationService: SpecializationService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.checkAuthStatus();
   }
 
-  saveProfile() {
-    this.editIndex = null;
-    // Save logic here
+  private checkAuthStatus(): void {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('accessToken');
+      const role = localStorage.getItem('role');
+      
+      if (!token || role !== 'DOCTOR') {
+        this.router.navigate(['/login']);
+        return;
+      }
+      
+      this.loadUserProfile();
+    }
   }
+
+  private loadUserProfile(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.authService.getProfile().subscribe({
+      next: (profile) => {
+        this.userProfile = profile;
+        if (profile.role !== 'DOCTOR' || !profile.doctorId) {
+          this.errorMessage = 'User profile is not properly configured as a doctor';
+          this.isLoading = false;
+          return;
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = `Failed to load user profile: ${error.message}`;
+        this.isLoading = false;
+        console.error('Error loading user profile:', error);
+      }
+    });
+  }
+
+  navigateToAppointments() {
+    this.router.navigate(['/doctor/appointments']);
+  }
+
+  navigateToPatientHistory() {
+    this.router.navigate(['/doctor/patient-history']);
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
   goBack() {
-    window.history.back();
+    this.router.navigate(['/login']);
   }
 
   logout() {
-    window.location.href = '/doctor-registration';
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  getSpecializationLabel(specialization: string): string {
+    return this.specializationService.getSpecializationLabel(specialization);
   }
 }

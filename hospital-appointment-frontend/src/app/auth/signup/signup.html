@@ -71,7 +71,10 @@
         <div class="form-grid">
           <div class="input-group">
             <label for="specialization">Specialization *</label>
-            <input id="specialization" type="text" formControlName="specialization" placeholder="e.g., Cardiology, Neurology" />
+            <select id="specialization" formControlName="specialization">
+              <option value="" disabled>Select Specialization</option>
+              <option *ngFor="let spec of specializations" [value]="spec.value">{{ spec.label }}</option>
+            </select>
             <span class="error-message" *ngIf="showError('specialization')">{{ fieldError('specialization') }}</span>
           </div>
           <div class="input-group">

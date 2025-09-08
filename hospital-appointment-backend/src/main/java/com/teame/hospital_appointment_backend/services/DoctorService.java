@@ -6,6 +6,7 @@ import com.teame.hospital_appointment_backend.models.dto.DoctorDTO;
 import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import com.teame.hospital_appointment_backend.models.entities.User;
 import com.teame.hospital_appointment_backend.models.enums.AccountStatus;
+import com.teame.hospital_appointment_backend.models.enums.DoctorSpecialization;
 import com.teame.hospital_appointment_backend.models.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,10 +103,10 @@ public class DoctorService {
     // -------------------------------
     // Get All Doctors / Filter
     // -------------------------------
-    public List<DoctorDTO> getAllDoctors(String specialization) {
+    public List<DoctorDTO> getAllDoctors(DoctorSpecialization specialization) {
         List<Doctor> doctors;
-        if (specialization != null && !specialization.isEmpty()) {
-            doctors = doctorDao.findBySpecializationContainingIgnoreCase(specialization);
+        if (specialization != null) {
+            doctors = doctorDao.findBySpecialization(specialization);
         } else {
             doctors = doctorDao.findAll();
         }

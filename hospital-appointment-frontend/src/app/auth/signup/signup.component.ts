@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { AuthService, RegisterRequest } from '../../services/auth.service';
+import { SpecializationService, SpecializationOption } from '../../services/specialization.service';
 
 @Component({
   selector: 'app-signup',
@@ -16,8 +17,9 @@ export class SignupComponent implements OnInit {
   submitted = false;
   message = '';
   messageColor = 'red';
+  specializations: SpecializationOption[] = [];
 
-  constructor(private auth: AuthService, private router: Router, private fb: FormBuilder) {
+  constructor(private auth: AuthService, private router: Router, private fb: FormBuilder, private specializationService: SpecializationService) {
     this.registerForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
       email: ['', [Validators.required, Validators.email]],
@@ -39,6 +41,7 @@ export class SignupComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.specializations = this.specializationService.getSpecializations();
     const roleCtrl = this.registerForm.get('role');
     roleCtrl?.valueChanges.subscribe((role) => {
       const name = this.registerForm.get('name');
@@ -200,6 +203,19 @@ export class SignupComponent implements OnInit {
             localStorage.setItem('userId', String(res.userId));
           }
           this.router.navigate(['/patient-dashboard']);
+          return;
+        }
+        if (res?.accessToken && res.role === 'DOCTOR') {
+          // Auto-login for doctor
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('accessToken', res.accessToken || '');
+            localStorage.setItem('tokenType', res.tokenType || 'Bearer');
+            localStorage.setItem('role', res.role);
+            localStorage.setItem('username', res.username);
+            localStorage.setItem('email', res.email || '');
+            localStorage.setItem('userId', String(res.userId));
+          }
+          this.router.navigate(['/doctor-dashboard']);
           return;
         }
       this.messageColor = 'green';

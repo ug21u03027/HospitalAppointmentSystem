@@ -1,97 +1,66 @@
-<div class="patient-dashboard">
-  <div class="container">
-    <!-- Navigation Header -->
-    <div class="nav-header">
-      <div class="nav-breadcrumb">
-        <i class="fa-solid fa-home"></i>
-        <span>Dashboard</span>
-      </div>
-      <div class="nav-user-info">
-        <span class="user-greeting">Welcome, {{ userName || 'Patient' }}!</span>
-        <button class="btn btn-outline btn-sm" (click)="logout()">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          Logout
-        </button>
-      </div>
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">🏥 <span>HMS</span></div>
+    <div class="user-info">
+      <p>Welcome, {{ userName || 'Patient' }}</p>
+      <small>Patient</small>
+    </div>
+    <ul>
+      <li><a routerLink="/patient-dashboard" class="active">📊 Dashboard</a></li>
+      <li><a routerLink="/book-appointment">📅 Book Appointment</a></li>
+      <li><a routerLink="/appointments">📋 My Appointments</a></li>
+      <li><a routerLink="/profile">👤 View Profile</a></li>
+      <li><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Patient Dashboard</h1>
+      <p>Hospital Management System - Patient Panel</p>
     </div>
 
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-      <h1 class="dashboard-title">Patient Dashboard</h1>
-      <p class="dashboard-subtitle">Manage your appointments and profile information</p>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="dashboard-actions">
-      <button class="btn btn-primary" (click)="navigateToBookAppointment()">
-        <i class="fa-solid fa-calendar-plus"></i>
-        Book Appointment
-      </button>
-      <button class="btn btn-secondary" (click)="navigateToAppointments()">
-        <i class="fa-solid fa-list"></i>
-        View Appointments
-      </button>
-      <button class="btn btn-secondary" (click)="navigateToProfile()">
-        <i class="fa-solid fa-user"></i>
-        View Profile
-      </button>
-    </div>
-
-    <!-- Quick Stats (Optional) -->
-    <div class="quick-stats">
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-calendar-check"></i>
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3>Book Appointment</h3>
+          <p>Schedule a new appointment with your preferred doctor</p>
         </div>
-        <div class="stat-number">3</div>
-        <div class="stat-label">Upcoming Appointments</div>
+        <button class="action-btn" (click)="navigateToBookAppointment()">Book Now</button>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-user-md"></i>
+
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+          <h3>My Appointments</h3>
+          <p>View and manage your upcoming and past appointments</p>
         </div>
-        <div class="stat-number">2</div>
-        <div class="stat-label">Doctors Consulted</div>
+        <button class="action-btn" (click)="navigateToAppointments()">View</button>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon">
-          <i class="fa-solid fa-clock"></i>
+
+      <div class="stat-card">
+        <div class="stat-icon">👤</div>
+        <div class="stat-info">
+          <h3>My Profile</h3>
+          <p>View and edit your personal information</p>
         </div>
-        <div class="stat-number">5</div>
-        <div class="stat-label">Total Visits</div>
-      </div>
-    </div>
-
-    <!-- Main Dashboard Cards -->
-    <div class="grid-cards">
-      <div class="card-option"
-           (click)="navigateToBookAppointment()"
-           tabindex="0" 
-           role="button" 
-           aria-label="Book Appointment">
-        <i class="fa-solid fa-calendar-plus"></i>
-        <h3>Book Appointment</h3>
-        <p>Schedule a new appointment with your preferred doctor</p>
+        <button class="action-btn" (click)="navigateToProfile()">View Profile</button>
       </div>
 
-      <div class="card-option"
-           (click)="navigateToAppointments()"
-           tabindex="0" 
-           role="button" 
-           aria-label="View Appointments">
-        <i class="fa-solid fa-list"></i>
-        <h3>View Appointments</h3>
-        <p>Check your upcoming and past appointments</p>
-      </div>
-
-      <div class="card-option"
-           (click)="navigateToProfile()"
-           tabindex="0" 
-           role="button" 
-           aria-label="View Profile">
-        <i class="fa-solid fa-user"></i>
-        <h3>View Profile</h3>
-        <p>View and update your personal information and preferences</p>
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>Quick Stats</h3>
+          <p>Your appointment history and statistics</p>
+        </div>
+        <div class="quick-info">
+          <p><strong>Upcoming:</strong> 3 appointments</p>
+          <p><strong>Doctors Consulted:</strong> 2</p>
+          <p><strong>Total Visits:</strong> 5</p>
+        </div>
       </div>
     </div>
   </div>

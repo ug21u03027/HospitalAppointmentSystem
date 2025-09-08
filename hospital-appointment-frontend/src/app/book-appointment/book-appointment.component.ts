@@ -1,28 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { AppointmentService, AppointmentRequest, DoctorDto, UserProfile } from '../services/appointment.service';
+import { SpecializationService, SpecializationOption } from '../services/specialization.service';
 
 @Component({
   selector: 'app-book-appointment',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
   templateUrl: './book-appointment.component.html',
   styleUrls: ['./book-appointment.component.css']
 })
 export class BookAppointmentComponent implements OnInit {
   appointmentForm: FormGroup;
   doctors: DoctorDto[] = [];
+  filteredDoctors: DoctorDto[] = [];
+  specializations: SpecializationOption[] = [];
+  selectedSpecialization: string = '';
   userProfile: UserProfile | null = null;
   today: string = '';
   isLoading = false;
   errorMessage = '';
   successMessage = '';
   availableTimes = [
-    '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
+    '09:00', '10:00', '11:00',
+    '14:00', '15:00', '16:00',
   ];
 
   constructor(
@@ -30,7 +34,8 @@ export class BookAppointmentComponent implements OnInit {
     private appointmentService: AppointmentService,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private specializationService: SpecializationService
   ) {
     this.appointmentForm = this.fb.group({
       doctorId: ['', Validators.required],
@@ -43,6 +48,7 @@ export class BookAppointmentComponent implements OnInit {
   ngOnInit(): void {
     this.checkAuthStatus();
     this.today = new Date().toISOString().split('T')[0];
+    this.specializations = this.specializationService.getSpecializations();
     
     // Handle query parameters for rescheduling
     this.route.queryParams.subscribe(params => {
@@ -85,7 +91,7 @@ export class BookAppointmentComponent implements OnInit {
           return;
         }
         this.isLoading = false;
-        this.loadDoctors();
+        // Don't load doctors initially - wait for specialization selection
       },
       error: (error) => {
         this.errorMessage = `Failed to load user profile: ${error.message}`;
@@ -95,19 +101,42 @@ export class BookAppointmentComponent implements OnInit {
     });
   }
 
-  private loadDoctors(): void {
+  private loadAllDoctors(): void {
+    console.log('loadAllDoctors called');
     this.isLoading = true;
     this.errorMessage = '';
     
     this.appointmentService.getDoctors().subscribe({
       next: (doctors) => {
+        console.log('All doctors loaded successfully:', doctors);
         this.doctors = doctors;
+        this.filteredDoctors = doctors;
         this.isLoading = false;
       },
       error: (error) => {
+        console.error('Error loading all doctors:', error);
         this.errorMessage = `Failed to load doctors: ${error.message}`;
         this.isLoading = false;
+      }
+    });
+  }
+
+  private loadDoctorsBySpecialization(specialization: string): void {
+    console.log('loadDoctorsBySpecialization called with:', specialization);
+    this.isLoading = true;
+    this.errorMessage = '';
+    
+    this.appointmentService.getDoctorsBySpecialization(specialization).subscribe({
+      next: (doctors) => {
+        console.log('Doctors loaded successfully:', doctors);
+        this.doctors = doctors;
+        this.filteredDoctors = doctors;
+        this.isLoading = false;
+      },
+      error: (error) => {
         console.error('Error loading doctors:', error);
+        this.errorMessage = `Failed to load doctors: ${error.message}`;
+        this.isLoading = false;
       }
     });
   }
@@ -115,6 +144,25 @@ export class BookAppointmentComponent implements OnInit {
   selectDoctor(doctorId: number): void {
     this.appointmentForm.patchValue({ doctorId: doctorId });
     this.clearMessages();
+  }
+
+  onSpecializationChange(newValue: string): void {
+    console.log('onSpecializationChange called with:', newValue);
+    
+    // Update the selectedSpecialization property
+    this.selectedSpecialization = newValue;
+    
+    // Clear selected doctor when specialization changes
+    this.appointmentForm.patchValue({ doctorId: '' });
+    
+    if (this.selectedSpecialization === '') {
+      // Load all doctors when "All Specializations" is selected
+      this.loadAllDoctors();
+    } else {
+      // Load doctors for the selected specialization
+      console.log('Loading doctors for specialization:', this.selectedSpecialization);
+      this.loadDoctorsBySpecialization(this.selectedSpecialization);
+    }
   }
 
   onBook(): void {
@@ -177,7 +225,7 @@ export class BookAppointmentComponent implements OnInit {
   // Helper method to get doctor specialization by ID
   getDoctorSpecialization(doctorId: number): string {
     const doctor = this.doctors.find(d => d.doctorId === doctorId);
-    return doctor ? doctor.specialization : 'General';
+    return doctor ? this.specializationService.getSpecializationLabel(doctor.specialization) : 'General';
   }
 
   // Helper method to get doctor fee by ID

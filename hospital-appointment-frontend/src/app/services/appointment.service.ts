@@ -138,6 +138,24 @@ export class AppointmentService {
   }
 
   /**
+   * Get doctors by specialization
+   */
+  getDoctorsBySpecialization(specialization: string): Observable<DoctorDto[]> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.get<DoctorDto[]>(`${this.baseUrl}/doctors?specialization=${specialization}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
    * Cancel an appointment
    */
   cancelAppointment(appointmentId: number): Observable<AppointmentDto> {
@@ -208,6 +226,45 @@ export class AppointmentService {
       }
     }).pipe(
       map(response => response.available),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Get appointments for a specific doctor
+   */
+  getDoctorAppointments(doctorId: number): Observable<any[]> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.get<any[]>(`${this.baseUrl}/appointments/doctor/${doctorId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Update appointment status
+   */
+  updateAppointmentStatus(appointmentId: number, status: string): Observable<any> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.put<any>(`${this.baseUrl}/appointments/${appointmentId}/status`, 
+      { status: status }, 
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    ).pipe(
       catchError(this.handleError.bind(this))
     );
   }

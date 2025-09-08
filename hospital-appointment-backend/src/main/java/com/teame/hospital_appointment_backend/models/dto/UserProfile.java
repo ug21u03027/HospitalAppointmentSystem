@@ -1,6 +1,7 @@
 package com.teame.hospital_appointment_backend.models.dto;
 
 import com.teame.hospital_appointment_backend.models.enums.AccountStatus;
+import com.teame.hospital_appointment_backend.models.enums.DoctorSpecialization;
 import com.teame.hospital_appointment_backend.models.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class UserProfile {
     private Long patientId;
     private Long doctorId;
     private Integer age;
-    private String specialization;
+    private DoctorSpecialization specialization;
     private String availability;
     private String phone;
     private Double consultationFee;

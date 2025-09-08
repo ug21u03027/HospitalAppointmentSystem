@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HospitalService, Patient, Doctor } from '../services/hospital';
 import { AuthService, UserProfile, PatientUpdateRequest, DoctorUpdateRequest } from '../services/auth.service';
+import { SpecializationService, SpecializationOption } from '../services/specialization.service';
 
 @Component({
   selector: 'app-view-profile',
@@ -21,12 +22,14 @@ export class ViewProfileComponent implements OnInit {
   isLoading: boolean = false;
   isUpdating: boolean = false;
   error: string = '';
+  specializations: SpecializationOption[] = [];
 
   constructor(
     private fb: FormBuilder,
     private hospitalService: HospitalService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private specializationService: SpecializationService
   ) {
     this.profileForm = this.fb.group({
       name: [''],
@@ -41,6 +44,7 @@ export class ViewProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.specializations = this.specializationService.getSpecializations();
     this.checkAuthStatus();
     this.fetchProfileData();
   }
@@ -246,5 +250,9 @@ export class ViewProfileComponent implements OnInit {
       case 'ADMIN': return 'Administrator';
       default: return 'User';
     }
+  }
+
+  getSpecializationLabel(specialization: string): string {
+    return this.specializationService.getSpecializationLabel(specialization);
   }
 }
