@@ -7,7 +7,7 @@ import { ManagePatientsComponent } from './admin/manage-patients/manage-patients
 import { PatientDashboardComponent } from './dashboard/patient-dashboard.component';
 import { BookAppointmentComponent } from './book-appointment/book-appointment.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
-import { ProfileComponent } from './profile/profile.component';
+import { ViewProfileComponent } from './view-profile/view-profile.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,7 +17,7 @@ export const routes: Routes = [
   { path: 'admin-dashboard', component: DashboardComponent },
   { path: 'book-appointment', component: BookAppointmentComponent },
   { path: 'appointments', component: AppointmentsComponent },
-  { path: 'profile', component: ProfileComponent },
+  { path: 'profile', component: ViewProfileComponent },
   { path: 'manage-doctors', component: ManageDoctorsComponent },
   { path: 'manage-patients', component: ManagePatientsComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },

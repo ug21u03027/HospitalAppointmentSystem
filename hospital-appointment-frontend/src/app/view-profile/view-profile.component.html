@@ -1,0 +1,197 @@
+<div class="view-profile-page">
+  <div class="container">
+    <!-- Header with Back Button -->
+    <div class="page-header">
+      <button class="btn btn-back" (click)="goBack()">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back
+      </button>
+      <div class="header-content">
+        <h1>View Profile</h1>
+        <p>View and manage your profile information</p>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="loading-spinner">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading profile...</p>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-container" *ngIf="error && !isLoading">
+      <div class="error-message">
+        <i class="fa-solid fa-exclamation-triangle"></i>
+        <p>{{ error }}</p>
+        <button class="btn btn-primary" (click)="fetchProfileData()">
+          <i class="fa-solid fa-refresh"></i>
+          Retry
+        </button>
+      </div>
+    </div>
+
+    <!-- Profile Information Display -->
+    <div class="profile-container" *ngIf="!isLoading && !error && currentUser">
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fa-solid fa-user-circle"></i>
+        </div>
+        <div class="profile-info">
+          <h2>{{ userRole === 'ADMIN' ? currentUser.username : (currentUser.name || 'User') }}</h2>
+          <span class="role-badge">{{ getRoleDisplayName() }}</span>
+        </div>
+        <div class="profile-actions">
+          <button 
+            class="btn btn-primary" 
+            (click)="toggleEdit()"
+            *ngIf="!isEditing && userRole !== 'ADMIN'">
+            <i class="fa-solid fa-edit"></i>
+            Edit Profile
+          </button>
+          <span class="admin-note" *ngIf="userRole === 'ADMIN'">
+            <i class="fa-solid fa-info-circle"></i>
+            Admin profile is read-only
+          </span>
+        </div>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="profile-form">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <!-- Basic Information Section -->
+          <div class="form-section">
+            <h3>Basic Information</h3>
+            <div class="form-grid">
+              <div class="input-group" *ngIf="userRole !== 'ADMIN'">
+                <label for="name">Full Name *</label>
+                <input 
+                  id="name" 
+                  type="text" 
+                  formControlName="name" 
+                  [readonly]="!isEditing"
+                  [class.readonly]="!isEditing"
+                  placeholder="Enter your full name" />
+                <span class="error-message" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+                  Name is required.
+                </span>
+              </div>
+              <div class="input-group">
+                <label for="username">Username *</label>
+                <input 
+                  id="username" 
+                  type="text" 
+                  formControlName="username" 
+                  [disabled]="true" />
+                <span class="small-muted">Username cannot be changed</span>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="input-group">
+                <label for="email">Email Address *</label>
+                <input 
+                  id="email" 
+                  type="email" 
+                  formControlName="email" 
+                  [disabled]="true" />
+                <span class="small-muted">Email cannot be changed</span>
+              </div>
+              <div class="input-group" *ngIf="userRole !== 'ADMIN'">
+                <label for="phone">Phone Number *</label>
+                <input 
+                  id="phone" 
+                  type="tel" 
+                  formControlName="phone" 
+                  [readonly]="!isEditing"
+                  [class.readonly]="!isEditing"
+                  placeholder="Enter your phone number" />
+                <span class="error-message" *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                  Phone number is required.
+                </span>
+              </div>
+            </div>
+
+            <!-- Patient-specific fields -->
+            <div class="form-grid" *ngIf="userRole === 'PATIENT'">
+              <div class="input-group">
+                <label for="age">Age</label>
+                <input 
+                  id="age" 
+                  type="number" 
+                  formControlName="age" 
+                  min="1" 
+                  max="150" 
+                  [readonly]="!isEditing"
+                  [class.readonly]="!isEditing"
+                  placeholder="Enter your age" />
+                <span class="error-message" *ngIf="profileForm.get('age')?.invalid && profileForm.get('age')?.touched">
+                  Please enter a valid age.
+                </span>
+              </div>
+            </div>
+
+            <!-- Doctor-specific fields -->
+            <div class="form-grid" *ngIf="userRole === 'DOCTOR'">
+              <div class="input-group">
+                <label for="specialization">Specialization</label>
+                <input 
+                  id="specialization" 
+                  type="text" 
+                  formControlName="specialization" 
+                  [readonly]="!isEditing"
+                  [class.readonly]="!isEditing"
+                  placeholder="Enter your specialization" />
+                <span class="error-message" *ngIf="profileForm.get('specialization')?.invalid && profileForm.get('specialization')?.touched">
+                  Specialization is required.
+                </span>
+              </div>
+              <div class="input-group">
+                <label for="availability">Availability</label>
+                <input 
+                  id="availability" 
+                  type="text" 
+                  formControlName="availability" 
+                  [readonly]="!isEditing"
+                  [class.readonly]="!isEditing"
+                  placeholder="e.g., Monday-Friday 9AM-5PM" />
+              </div>
+            </div>
+
+            <div class="form-grid" *ngIf="userRole === 'DOCTOR'">
+              <div class="input-group">
+                <label for="consultationFee">Consultation Fee</label>
+                <input 
+                  id="consultationFee" 
+                  type="number" 
+                  formControlName="consultationFee" 
+                  min="0" 
+                  step="0.01"
+                  [readonly]="!isEditing"
+                  [class.readonly]="!isEditing"
+                  placeholder="Enter consultation fee" />
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- Form Actions (only when editing) -->
+          <div class="form-actions" *ngIf="isEditing">
+            <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isUpdating">
+              <i class="fa-solid fa-spinner fa-spin" *ngIf="isUpdating"></i>
+              <i class="fa-solid fa-save" *ngIf="!isUpdating"></i>
+              {{ isUpdating ? 'Updating...' : 'Save Changes' }}
+            </button>
+            <button type="button" class="btn btn-secondary" (click)="toggleEdit()" [disabled]="isUpdating">
+              <i class="fa-solid fa-times"></i>
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
