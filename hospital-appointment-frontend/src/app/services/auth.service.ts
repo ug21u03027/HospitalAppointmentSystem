@@ -27,9 +27,43 @@ export interface RegisterRequest {
   consultationFee?: number;
 }
 
+export interface UserProfile {
+  userId: number;
+  name: string;
+  username: string;
+  email: string;
+  role: string;
+  accountStatus: string;
+  // Role specific fields
+  patientId?: number;
+  doctorId?: number;
+  age?: number;
+  specialization?: string;
+  availability?: string;
+  phone?: string;
+  consultationFee?: number;
+}
+
+export interface PatientUpdateRequest {
+  name: string;
+  age: number;
+  contact: string;
+}
+
+export interface DoctorUpdateRequest {
+  name: string;
+  specialization: string;
+  availability: string;
+  phone: string;
+  consultationFee: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly baseUrl = 'http://localhost:8080/api/auth';
+  private readonly userUrl = 'http://localhost:8080/api/user';
+  private readonly patientUrl = 'http://localhost:8080/api/patients';
+  private readonly doctorUrl = 'http://localhost:8080/api/doctors';
 
   constructor(private http: HttpClient) {}
 
@@ -55,6 +89,26 @@ export class AuthService {
   getRole(): AuthResponse['role'] | null {
     if (typeof window === 'undefined') return null;
     return (localStorage.getItem('role') as any) || null;
+  }
+
+  getProfile(): Observable<UserProfile> {
+    const token = localStorage.getItem('accessToken');
+    const headers = { 'Authorization': `Bearer ${token}` };
+    return this.http.get<UserProfile>(`${this.userUrl}/me`, { headers });
+  }
+
+  updatePatient(patientId: number, updateData: PatientUpdateRequest): Observable<any> {
+    const token = localStorage.getItem('accessToken');
+    const headers = { 'Authorization': `Bearer ${token}` };
+    return this.http.put(`${this.patientUrl}/${patientId}`, updateData, { headers });
+  }
+
+  updateDoctor(doctorId: number, updateData: DoctorUpdateRequest): Observable<any> {
+    const token = localStorage.getItem('accessToken');
+    const headers = { 'Authorization': `Bearer ${token}` };
+    const currentUserId = localStorage.getItem('userId');
+    const currentUserRole = localStorage.getItem('role');
+    return this.http.put(`${this.doctorUrl}/${doctorId}?currentUserId=${currentUserId}&currentUserRole=${currentUserRole}`, updateData, { headers });
   }
 
   logout(): void {
