@@ -1,0 +1,21 @@
+<div class="appointments-bg">
+  <h2>Appointments</h2>
+  <button class="back-btn" (click)="goBack()">Back</button>
+  <table>
+    <tr>
+      <th>Patient</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    <tr *ngFor="let appt of appointments">
+      <td>{{ appt.patientName }}</td>
+      <td>{{ appt.date }}</td>
+      <td>{{ appt.status }}</td>
+      <td>
+        <button (click)="markCompleted(appt.id)" [disabled]="appt.status !== 'pending'">Complete</button>
+        <button (click)="markCancelled(appt.id)" [disabled]="appt.status !== 'pending'">Cancel</button>
+      </td>
+    </tr>
+  </table>
+</div>

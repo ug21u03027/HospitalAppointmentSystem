@@ -1,0 +1,38 @@
+ 
+<div class="dashboard-header">
+  <h2>Doctor Dashboard</h2>
+  <button class="logout-btn" (click)="logout()">Logout</button>
+</div>
+<div class="dashboard-nav-card">
+  <div class="dashboard-links dashboard-links-center">
+    <button class="back-btn" (click)="goBack()">Back</button>
+    <a routerLink="/appointments" class="dashboard-btn">Go to Appointments</a>
+    <a routerLink="/patient-history" class="dashboard-btn patient-history-btn">Patient History</a>
+  </div>
+</div>
+<div class="doctor-rows-simple">
+  <div class="doctor-row-simple" *ngFor="let row of doctors | chunk:3; let rowIndex = index">
+    <div *ngFor="let doctor of row; let i = index">
+      <div class="doctor-card">
+        <div *ngIf="editIndex !== (rowIndex * 3 + i)">
+          <p><strong>Name:</strong> {{ doctor.name }}</p>
+          <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+          <p><strong>Phone:</strong> {{ doctor.phone }}</p>
+          <p><strong>Email:</strong> {{ doctor.email }}</p>
+          <p><strong>Experience:</strong> {{ doctor.experience }} years</p>
+          <button (click)="enableEdit(rowIndex * 3 + i)">Edit Profile</button>
+          <hr />
+        </div>
+        <div *ngIf="editIndex === (rowIndex * 3 + i)">
+          <label>Name: <input [(ngModel)]="doctor.name" /></label><br />
+          <label>Specialization: <input [(ngModel)]="doctor.specialization" /></label><br />
+          <label>Phone: <input [(ngModel)]="doctor.phone" /></label><br />
+          <label>Email: <input [(ngModel)]="doctor.email" /></label><br />
+          <label>Experience: <input type="number" [(ngModel)]="doctor.experience" /></label><br />
+          <button (click)="saveProfile()">Save</button>
+          <hr />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

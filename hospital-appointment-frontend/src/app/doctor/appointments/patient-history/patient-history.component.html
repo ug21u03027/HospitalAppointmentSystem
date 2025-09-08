@@ -1,0 +1,16 @@
+<div class="patient-history-bg">
+  <h2>Patient History</h2>
+  <button class="back-btn" (click)="goBack()">Back</button>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Last Visit</th>
+      <th>Diagnosis</th>
+    </tr>
+    <tr *ngFor="let patient of patients">
+      <td>{{ patient.name }}</td>
+      <td>{{ patient.lastVisit }}</td>
+      <td>{{ patient.diagnosis }}</td>
+    </tr>
+  </table>
+</div>

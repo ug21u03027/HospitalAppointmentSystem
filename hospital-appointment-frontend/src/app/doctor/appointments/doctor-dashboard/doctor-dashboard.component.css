@@ -1,0 +1,176 @@
+.doctor-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 16px rgba(25, 118, 210, 0.10);
+  border: 1.5px solid #e3f2fd;
+  padding: 28px 22px 20px 22px;
+  min-width: 260px;
+  max-width: 320px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+.doctor-card:hover {
+  box-shadow: 0 8px 32px rgba(25, 118, 210, 0.18);
+  transform: translateY(-2px) scale(1.03);
+}
+.doctor-row-simple {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+.dashboard-header h2 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+}
+.dashboard-nav-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 18px 0 10px 0;
+  max-width: 600px;
+  margin: 18px auto 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+body, .registration-container, .login-container, .dashboard-header, .dashboard-nav-card, .doctor-rows-simple {
+  background: #e3f2fd !important;
+}
+.dashboard-links-center {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.dashboard-btn, .back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 28px;
+  background: linear-gradient(90deg, orange 0%, #ff9800 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(255,152,0,0.10);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  margin: 0 4px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.dashboard-btn:hover, .back-btn:hover {
+  background: linear-gradient(90deg, #ff9800 0%, orange 100%);
+  box-shadow: 0 4px 16px rgba(255,152,0,0.18);
+  transform: translateY(-2px) scale(1.03);
+}
+/* Dashboard header for top right logout button */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(90deg, #ff512f 0%, #dd2476 100%);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(221,36,118,0.12);
+  margin-left: 10px;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+}
+.logout-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 4px 12px rgba(221,36,118,0.18);
+  background: linear-gradient(90deg, #dd2476 0%, #ff512f 100%);
+}
+.logout-icon {
+  font-size: 15px;
+  margin-right: 1px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.10));
+}
+.logout-text {
+  letter-spacing: 0.3px;
+}
+/* Back button styling for all pages */
+.back-btn {
+  margin: 0;
+  padding: 8px 18px;
+  background: orange;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+.back-btn:hover {
+  background: #ff9800;
+}
+/* Dashboard links container for right alignment */
+.dashboard-links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+
+.dashboard-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background: orange;
+  color: #fff;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.dashboard-btn:hover {
+  background: #ff9800;
+}
+
+.patient-history-btn {
+  background: orange;
+  color: #fff;
+}
+.patient-history-btn:hover {
+  background: #ff9800;
+}
+h2 {
+  text-align: center;
+  color: #1976d2;
+}
+label {
+  display: block;
+  margin-top: 10px;
+}
+input {
+  padding: 6px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+button {
+  margin-top: 15px;
+  padding: 8px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
