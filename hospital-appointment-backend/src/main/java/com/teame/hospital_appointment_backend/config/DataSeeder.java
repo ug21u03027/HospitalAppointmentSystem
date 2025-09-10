@@ -10,6 +10,7 @@ import com.teame.hospital_appointment_backend.models.entities.Patient;
 import com.teame.hospital_appointment_backend.models.entities.User;
 import com.teame.hospital_appointment_backend.models.enums.AccountStatus;
 import com.teame.hospital_appointment_backend.models.enums.AppointmentStatus;
+import com.teame.hospital_appointment_backend.models.enums.DoctorSpecialization;
 import com.teame.hospital_appointment_backend.models.enums.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,42 +97,153 @@ public class DataSeeder implements CommandLineRunner {
         patientUser3.setRole(Role.PATIENT);
         patientUser3.setStatus(AccountStatus.ACTIVATED);
 
-        userDao.saveAll(List.of(admin1, admin2, doctorUser1, doctorUser2, patientUser1, patientUser2, patientUser3));
+        // ---- Users ----
+        User doctorUser3 = new User();
+        doctorUser3.setUsername("doctor3");
+        doctorUser3.setEmail("doctor3@example.com");
+        doctorUser3.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser3.setRole(Role.DOCTOR);
+        doctorUser3.setStatus(AccountStatus.ACTIVATED);
+
+        User doctorUser4 = new User();
+        doctorUser4.setUsername("doctor4");
+        doctorUser4.setEmail("doctor4@example.com");
+        doctorUser4.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser4.setRole(Role.DOCTOR);
+        doctorUser4.setStatus(AccountStatus.ACTIVATED);
+
+        User doctorUser5 = new User();
+        doctorUser5.setUsername("doctor5");
+        doctorUser5.setEmail("doctor5@example.com");
+        doctorUser5.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser5.setRole(Role.DOCTOR);
+        doctorUser5.setStatus(AccountStatus.ACTIVATED);
+
+        User doctorUser6 = new User();
+        doctorUser6.setUsername("doctor6");
+        doctorUser6.setEmail("doctor6@example.com");
+        doctorUser6.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser6.setRole(Role.DOCTOR);
+        doctorUser6.setStatus(AccountStatus.ACTIVATED);
+
+        User doctorUser7 = new User();
+        doctorUser7.setUsername("doctor7");
+        doctorUser7.setEmail("doctor7@example.com");
+        doctorUser7.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser7.setRole(Role.DOCTOR);
+        doctorUser7.setStatus(AccountStatus.ACTIVATED);
+
+        User doctorUser8 = new User();
+        doctorUser8.setUsername("doctor8");
+        doctorUser8.setEmail("doctor8@example.com");
+        doctorUser8.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser8.setRole(Role.DOCTOR);
+        doctorUser8.setStatus(AccountStatus.ACTIVATED);
+
+        User doctorUser9 = new User();
+        doctorUser9.setUsername("doctor9");
+        doctorUser9.setEmail("doctor9@example.com");
+        doctorUser9.setPassword(passwordEncoder.encode("doctor123"));
+        doctorUser9.setRole(Role.DOCTOR);
+        doctorUser9.setStatus(AccountStatus.ACTIVATED);
+
+        userDao.saveAll(List.of(
+                admin1, admin2,
+                doctorUser1, doctorUser2, doctorUser3, doctorUser4, doctorUser5, doctorUser6, doctorUser7, doctorUser8, doctorUser9,
+                patientUser1, patientUser2, patientUser3
+        ));
 
         // ---- Doctors ----
+
         Doctor doctor1 = new Doctor();
         doctor1.setName("Dr. John Smith");
-        doctor1.setSpecialization("Cardiology");
-        doctor1.setAvailability("Mon-Fri 10:00-16:00");
+        doctor1.setSpecialization(DoctorSpecialization.CARDIOLOGIST);
+        doctor1.setAvailability("Mon-Fri 09:00-16:00");
         doctor1.setPhone("1234567890");
         doctor1.setConsultationFee(500.0);
         doctor1.setUser(doctorUser1);
 
         Doctor doctor2 = new Doctor();
         doctor2.setName("Dr. Alice Brown");
-        doctor2.setSpecialization("Dermatology");
-        doctor2.setAvailability("Tue-Sat 09:00-15:00");
+        doctor2.setSpecialization(DoctorSpecialization.DERMATOLOGIST);
+        doctor2.setAvailability("Tue-Sat 09:00-16:00");
         doctor2.setPhone("0987654321");
         doctor2.setConsultationFee(400.0);
         doctor2.setUser(doctorUser2);
 
-        doctorDao.saveAll(List.of(doctor1, doctor2));
+        Doctor doctor3 = new Doctor();
+        doctor3.setName("Dr. Michael Lee");
+        doctor3.setSpecialization(DoctorSpecialization.NEUROLOGIST);
+        doctor3.setAvailability("Mon-Fri 10:00-17:00");
+        doctor3.setPhone("1112223333");
+        doctor3.setConsultationFee(600.0);
+        doctor3.setUser(doctorUser3);
+
+        Doctor doctor4 = new Doctor();
+        doctor4.setName("Dr. Sarah Johnson");
+        doctor4.setSpecialization(DoctorSpecialization.PEDIATRICIAN);
+        doctor4.setAvailability("Mon-Sat 08:00-14:00");
+        doctor4.setPhone("2223334444");
+        doctor4.setConsultationFee(350.0);
+        doctor4.setUser(doctorUser4);
+
+        Doctor doctor5 = new Doctor();
+        doctor5.setName("Dr. David Kim");
+        doctor5.setSpecialization(DoctorSpecialization.ORTHOPEDIC_SURGEON);
+        doctor5.setAvailability("Tue-Fri 12:00-18:00");
+        doctor5.setPhone("3334445555");
+        doctor5.setConsultationFee(700.0);
+        doctor5.setUser(doctorUser5);
+
+        Doctor doctor6 = new Doctor();
+        doctor6.setName("Dr. Emily Davis");
+        doctor6.setSpecialization(DoctorSpecialization.GYNECOLOGIST);
+        doctor6.setAvailability("Mon-Fri 09:00-13:00");
+        doctor6.setPhone("4445556666");
+        doctor6.setConsultationFee(450.0);
+        doctor6.setUser(doctorUser6);
+
+        Doctor doctor7 = new Doctor();
+        doctor7.setName("Dr. Robert Wilson");
+        doctor7.setSpecialization(DoctorSpecialization.ENT_SPECIALIST);
+        doctor7.setAvailability("Wed-Sun 14:00-20:00");
+        doctor7.setPhone("5556667777");
+        doctor7.setConsultationFee(400.0);
+        doctor7.setUser(doctorUser7);
+
+        Doctor doctor8 = new Doctor();
+        doctor8.setName("Dr. Laura Martinez");
+        doctor8.setSpecialization(DoctorSpecialization.ONCOLOGIST);
+        doctor8.setAvailability("Mon-Fri 10:00-15:00");
+        doctor8.setPhone("6667778888");
+        doctor8.setConsultationFee(800.0);
+        doctor8.setUser(doctorUser8);
+
+        Doctor doctor9 = new Doctor();
+        doctor9.setName("Dr. James Anderson");
+        doctor9.setSpecialization(DoctorSpecialization.PSYCHIATRIST);
+        doctor9.setAvailability("Tue-Sat 11:00-17:00");
+        doctor9.setPhone("7778889999");
+        doctor9.setConsultationFee(550.0);
+        doctor9.setUser(doctorUser9);
+
+        doctorDao.saveAll(List.of(doctor1, doctor2, doctor3, doctor4, doctor5, doctor6, doctor7, doctor8, doctor9));
 
         // ---- Patients ----
         Patient patient1 = new Patient();
-        patient1.setName("Patient One");
+        patient1.setName("Mr. Aman Gupta");
         patient1.setAge(30);
         patient1.setContact("1111111111");
         patient1.setUser(patientUser1);
 
         Patient patient2 = new Patient();
-        patient2.setName("Patient Two");
+        patient2.setName("Mr. Ramesh Kumar");
         patient2.setAge(25);
         patient2.setContact("2222222222");
         patient2.setUser(patientUser2);
 
         Patient patient3 = new Patient();
-        patient3.setName("Patient Three");
+        patient3.setName("Mrs. Shreya Soni");
         patient3.setAge(40);
         patient3.setContact("3333333333");
         patient3.setUser(patientUser3);

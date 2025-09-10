@@ -104,6 +104,13 @@ export class HospitalService {
     return this.doctors;
   }
 
+  updateDoctor(updated: Doctor): void {
+    const index = this.doctors.findIndex(d => d.doctorId === updated.doctorId);
+    if (index !== -1) {
+      this.doctors[index] = updated;
+    }
+  }
+
   getPatients(): Patient[] {
     if (!this.isBrowser()) return [];
     return JSON.parse(localStorage.getItem('patients') || '[]');

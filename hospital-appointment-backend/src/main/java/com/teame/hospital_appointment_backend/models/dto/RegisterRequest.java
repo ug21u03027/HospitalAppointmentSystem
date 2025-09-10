@@ -1,5 +1,6 @@
 package com.teame.hospital_appointment_backend.models.dto;
 
+import com.teame.hospital_appointment_backend.models.enums.DoctorSpecialization;
 import com.teame.hospital_appointment_backend.models.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -32,7 +33,7 @@ public class RegisterRequest {
     private String name;
     private Integer age;
     private String contact;
-    private String specialization;
+    private DoctorSpecialization specialization;
     private String availability;
     private String phone;
     private Double consultationFee;

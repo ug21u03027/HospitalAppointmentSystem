@@ -50,12 +50,32 @@ export interface DoctorDto {
   status: string;
 }
 
+export interface PatientDto {
+  patientId: number;
+  name: string;
+  age: number;
+  contact: string;
+  userId: number;
+}
+
 export interface ApiErrorResponse {
   timestamp: string;
   status: number;
   error: string;
   message: string;
   path: string;
+}
+
+export interface SlotRequest {
+  doctorId: number;
+  date: string; // ISO date string (YYYY-MM-DD)
+}
+
+export interface SlotResponse {
+  doctorId: number;
+  date: string;
+  availableSlots: string[];
+  bookedSlots: string[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -138,6 +158,24 @@ export class AppointmentService {
   }
 
   /**
+   * Get doctors by specialization
+   */
+  getDoctorsBySpecialization(specialization: string): Observable<DoctorDto[]> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.get<DoctorDto[]>(`${this.baseUrl}/doctors?specialization=${specialization}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
    * Cancel an appointment
    */
   cancelAppointment(appointmentId: number): Observable<AppointmentDto> {
@@ -208,6 +246,121 @@ export class AppointmentService {
       }
     }).pipe(
       map(response => response.available),
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Get appointments for a specific doctor
+   */
+  getDoctorAppointments(doctorId: number): Observable<any[]> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.get<any[]>(`${this.baseUrl}/appointments/doctor/${doctorId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Update appointment status
+   */
+  updateAppointmentStatus(appointmentId: number, status: string): Observable<any> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.put<any>(`${this.baseUrl}/appointments/${appointmentId}/status`, 
+      { status: status }, 
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }
+    ).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Get patient by ID
+   */
+  getPatientById(patientId: number): Observable<PatientDto> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.get<PatientDto>(`${this.baseUrl}/patients/${patientId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Approve appointment
+   */
+  approveAppointment(appointmentId: number): Observable<AppointmentDto> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.put<AppointmentDto>(`${this.baseUrl}/appointments/${appointmentId}/approve`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Reject appointment
+   */
+  rejectAppointment(appointmentId: number): Observable<AppointmentDto> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.put<AppointmentDto>(`${this.baseUrl}/appointments/${appointmentId}/reject`, {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }).pipe(
+      catchError(this.handleError.bind(this))
+    );
+  }
+
+  /**
+   * Get available time slots for a doctor on a specific date
+   */
+  getAvailableSlots(request: SlotRequest): Observable<SlotResponse> {
+    const token = this.getAuthToken();
+    if (!token) {
+      return throwError(() => new Error('No authentication token found'));
+    }
+
+    return this.http.get<SlotResponse>(`${this.baseUrl}/appointments/slots`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      params: {
+        doctorId: request.doctorId.toString(),
+        date: request.date
+      }
+    }).pipe(
       catchError(this.handleError.bind(this))
     );
   }

@@ -34,18 +34,58 @@
         <!-- Doctor Selection Section -->
         <div class="form-section">
           <h3>Select Doctor</h3>
-          <div class="doctor-grid">
-            <div *ngFor="let doc of doctors" 
-                 class="doctor-card"
-                 [class.selected]="appointmentForm.get('doctorId')?.value === doc.doctorId"
-                 (click)="selectDoctor(doc.doctorId)">
-              <div class="doctor-info">
-                <h4>{{ doc.name }}</h4>
-                <p class="doctor-specialty">{{ doc.specialization }}</p>
-                <p>{{ doc.availability }}</p>
-                <p><strong>Fee: ₹{{ doc.consultationFee }}</strong></p>
-              </div>
+          
+          <!-- Specialization Filter -->
+          <div class="filter-section">
+            <div class="input-group">
+              <label for="specialization">Filter by Specialization</label>
+              <select id="specialization" (change)="onSpecializationChange($any($event.target).value)" [value]="selectedSpecialization">
+                <option value="">All Specializations</option>
+                <option *ngFor="let spec of specializations" [value]="spec.value">{{ spec.label }}</option>
+              </select>
             </div>
+          </div>
+
+          <div *ngIf="selectedSpecialization === '' && !isLoading && filteredDoctors.length === 0" class="no-specialization-selected">
+            <div class="info-message">
+              <i class="fa-solid fa-info-circle"></i>
+              <p>Please select a specialization to view available doctors.</p>
+            </div>
+          </div>
+
+          <div *ngIf="filteredDoctors.length > 0 && !isLoading" class="doctors-table-container">
+            <table class="doctors-table">
+              <thead>
+                <tr>
+                  <th>Doctor Name</th>
+                  <th>Specialization</th>
+                  <th>Availability</th>
+                  <th>Consultation Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let doc of filteredDoctors" 
+                    [class.selected]="appointmentForm.get('doctorId')?.value === doc.doctorId"
+                    (click)="selectDoctor(doc.doctorId)">
+                  <td>{{ doc.name }}</td>
+                  <td>{{ getDoctorSpecialization(doc.doctorId) }}</td>
+                  <td>{{ doc.availability }}</td>
+                  <td>₹{{ doc.consultationFee }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <div *ngIf="selectedSpecialization !== '' && filteredDoctors.length === 0 && !isLoading" class="no-doctors">
+            <div class="info-message">
+              <i class="fa-solid fa-user-md"></i>
+              <p>No doctors found for the selected specialization.</p>
+            </div>
+          </div>
+
+          <div *ngIf="isLoading" class="loading-doctors">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <p>Loading doctors...</p>
           </div>
         </div>
 
@@ -55,12 +95,14 @@
           <div class="form-grid">
             <div class="input-group">
               <label for="date">Appointment Date *</label>
-              <input id="date" type="date" formControlName="date" [min]="today" />
+              <input id="date" type="date" formControlName="date" [min]="today" (change)="onDateChange()" />
             </div>
             <div class="input-group">
               <label for="time">Preferred Time *</label>
               <select id="time" formControlName="time" required>
                 <option value="" disabled>Select Time</option>
+                <option *ngIf="isLoadingSlots" value="" disabled>Loading available times...</option>
+                <option *ngIf="!isLoadingSlots && availableTimes.length === 0" value="" disabled>No available times for selected date</option>
                 <option *ngFor="let t of availableTimes" [value]="t">{{ t }}</option>
               </select>
             </div>

@@ -45,6 +45,10 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/manage-patients']);
   }
 
+  navigateToProfile() {
+    this.router.navigate(['/profile']);
+  }
+
   logout(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('accessToken');

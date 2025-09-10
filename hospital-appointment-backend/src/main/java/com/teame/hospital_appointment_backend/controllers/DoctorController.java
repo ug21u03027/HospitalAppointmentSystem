@@ -3,12 +3,14 @@ package com.teame.hospital_appointment_backend.controllers;
 import com.teame.hospital_appointment_backend.models.dto.DoctorDTO;
 import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import com.teame.hospital_appointment_backend.models.entities.User;
+import com.teame.hospital_appointment_backend.models.enums.DoctorSpecialization;
 import com.teame.hospital_appointment_backend.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
 import java.util.List;
 
 @RestController
@@ -26,14 +28,14 @@ public class DoctorController {
     // Update doctor
     // -------------------------
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor,
-                                               @RequestParam Long currentUserId,
-                                               @RequestParam String currentUserRole) {
+    public ResponseEntity<DoctorDTO> updateDoctor(@PathVariable Long id, @RequestBody Doctor doctor,
+                                            @RequestParam Long currentUserId,
+                                            @RequestParam String currentUserRole) {
         try {
-            doctorService.updateDoctor(id, doctor, currentUserId, currentUserRole);
-            return ResponseEntity.ok("Doctor updated successfully.");
+            DoctorDTO updatedDoctor=doctorService.updateDoctor(id, doctor, currentUserId, currentUserRole);
+            return ResponseEntity.ok(updatedDoctor);
         } catch (Exception e) {
-            return ResponseEntity.status(403).body("Error updating doctor: " + e.getMessage());
+            return ResponseEntity.status(403).body(null);
         }
     }
 
@@ -70,7 +72,8 @@ public class DoctorController {
     // Get all doctors / filter by specialization
     // -------------------------
     @GetMapping
-    public ResponseEntity<List<DoctorDTO>> getAllDoctors(@RequestParam(required = false) String specialization) {
+    public ResponseEntity<List<DoctorDTO>> getAllDoctors(
+            @RequestParam(required = false) DoctorSpecialization specialization) {
         List<DoctorDTO> doctors = doctorService.getAllDoctors(specialization);
         return ResponseEntity.ok(doctors);
     }

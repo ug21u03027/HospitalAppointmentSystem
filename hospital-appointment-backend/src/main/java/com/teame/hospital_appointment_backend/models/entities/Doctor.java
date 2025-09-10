@@ -1,5 +1,6 @@
 package com.teame.hospital_appointment_backend.models.entities;
 
+import com.teame.hospital_appointment_backend.models.enums.DoctorSpecialization;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +19,8 @@ public class Doctor {
 
     private String name;
 
-    private String specialization;
+    @Enumerated(EnumType.STRING)
+    private DoctorSpecialization specialization;
 
     private String availability;
 

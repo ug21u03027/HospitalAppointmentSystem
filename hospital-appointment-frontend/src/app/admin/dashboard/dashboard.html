@@ -10,6 +10,7 @@
       <li><a routerLink="/admin-dashboard" class="active">📊 Dashboard</a></li>
       <li><a routerLink="/manage-doctors">👨‍⚕️ Manage Doctors</a></li>
       <li><a routerLink="/manage-patients">🧑‍⚕️ Manage Patients</a></li>
+      <li><a routerLink="/profile">👤 View Profile</a></li>
       <li><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
     </ul>
   </div>
@@ -50,12 +51,12 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon">⚙️</div>
+        <div class="stat-icon">👤</div>
         <div class="stat-info">
-          <h3>Settings</h3>
-          <p>Configure system settings</p>
+          <h3>Profile</h3>
+          <p>View and edit your profile information</p>
         </div>
-        <button class="action-btn" disabled>Coming Soon</button>
+        <button class="action-btn" (click)="navigateToProfile()">View Profile</button>
       </div>
     </div>
   </div>

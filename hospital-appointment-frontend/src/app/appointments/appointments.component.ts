@@ -169,15 +169,36 @@ export class AppointmentsComponent implements OnInit {
   }
 
   rescheduleAppointment(appointment: AppointmentDto): void {
-    // Navigate to book appointment with pre-filled data
-    this.router.navigate(['/book-appointment'], {
-      queryParams: {
-        doctorId: appointment.doctorId,
-        date: appointment.date,
-        time: appointment.time,
-        symptoms: appointment.symptoms
-      }
-    });
+    // Show confirmation dialog
+    const confirmed = confirm(
+      'Are you sure you want to reschedule this appointment?\n\n' +
+      'The current appointment will be cancelled and you will be redirected to book a new appointment with the same doctor.'
+    );
+    
+    if (confirmed) {
+      // Cancel the current appointment first
+      this.appointmentService.cancelAppointment(appointment.id).subscribe({
+        next: (cancelledAppointment) => {
+          console.log('Appointment cancelled for rescheduling:', cancelledAppointment);
+          
+          // Get doctor specialization for pre-selection
+          const doctorSpecialization = this.getDoctorSpecialization(appointment.doctorId);
+          
+          // Navigate to book appointment with pre-filled data
+          this.router.navigate(['/book-appointment'], {
+            queryParams: {
+              doctorId: appointment.doctorId,
+              specialization: doctorSpecialization,
+              symptoms: appointment.symptoms
+            }
+          });
+        },
+        error: (error) => {
+          console.error('Error cancelling appointment for reschedule:', error);
+          this.errorMessage = 'Failed to cancel appointment. Please try again.';
+        }
+      });
+    }
   }
 
   bookNewAppointment(): void {

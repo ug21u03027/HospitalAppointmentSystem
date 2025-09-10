@@ -28,7 +28,8 @@ public class PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id " + patientId));
 
         if((!userDetails.getUser().getUserId().equals(patient.getUser().getUserId()))
-                && (!userDetails.getUser().getRole().equals(Role.ADMIN)))
+                && (!userDetails.getUser().getRole().equals(Role.ADMIN))
+                &&(!userDetails.getUser().getRole().equals(Role.DOCTOR)))
             throw new ForbiddenException("Not authorised to access this patient");
 
 

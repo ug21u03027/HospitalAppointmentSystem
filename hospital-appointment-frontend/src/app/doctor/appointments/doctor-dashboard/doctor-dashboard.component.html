@@ -1,0 +1,83 @@
+ 
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">🏥 <span>HMS</span></div>
+    <div class="user-info" *ngIf="userProfile">
+      <p>Welcome, Dr. {{ userProfile.name }}</p>
+      <small>{{ getSpecializationLabel(userProfile.specialization || '') }}</small>
+    </div>
+    <ul>
+      <li><a routerLink="/doctor-dashboard" class="active">📊 Dashboard</a></li>
+      <li><a routerLink="/doctor/appointments">📅 My Appointments</a></li>
+      <li><a routerLink="/doctor/patient-history">👥 Patient History</a></li>
+      <li><a routerLink="/profile">👤 View Profile</a></li>
+      <li><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Loading...
+    </div>
+
+    <!-- Dashboard Content -->
+    <div *ngIf="userProfile && !isLoading">
+      <div class="header">
+        <h1>Doctor Dashboard</h1>
+        <p>Hospital Management System - Doctor Panel</p>
+      </div>
+
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-info">
+            <h3>My Appointments</h3>
+            <p>View and manage your upcoming appointments</p>
+          </div>
+          <button class="action-btn" (click)="navigateToAppointments()">View</button>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <h3>Patient History</h3>
+            <p>Review patient history and past consultations</p>
+          </div>
+          <button class="action-btn" (click)="navigateToPatientHistory()">View</button>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">👤</div>
+          <div class="stat-info">
+            <h3>My Profile</h3>
+            <p>View and edit your profile information</p>
+          </div>
+          <button class="action-btn" (click)="navigateToProfile()">View Profile</button>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <h3>Quick Overview</h3>
+            <p>Your specialization and contact information</p>
+          </div>
+          <div class="quick-info">
+            <p><strong>Specialization:</strong> {{ getSpecializationLabel(userProfile.specialization || '') }}</p>
+            <p><strong>Phone:</strong> {{ userProfile.phone || 'Not specified' }}</p>
+            <p><strong>Consultation Fee:</strong> ₹{{ userProfile.consultationFee || 0 }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

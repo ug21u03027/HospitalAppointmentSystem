@@ -1,0 +1,22 @@
+package com.teame.hospital_appointment_backend.models.enums;
+
+public enum DoctorSpecialization {
+    GENERAL_PHYSICIAN,
+    PEDIATRICIAN,
+    CARDIOLOGIST,
+    DERMATOLOGIST,
+    NEUROLOGIST,
+    PSYCHIATRIST,
+    ORTHOPEDIC_SURGEON,
+    GYNECOLOGIST,
+    ENT_SPECIALIST,
+    ONCOLOGIST,
+    UROLOGIST,
+    OPHTHALMOLOGIST,
+    GASTROENTEROLOGIST,
+    PULMONOLOGIST,
+    ENDOCRINOLOGIST,
+    RADIOLOGIST,
+    DENTIST,
+    SURGEON
+}

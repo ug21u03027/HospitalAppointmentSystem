@@ -232,3 +232,198 @@
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+/* Info messages */
+.info-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #6c757d;
+  text-align: center;
+}
+
+.info-message i {
+  font-size: 1.5rem;
+  color: #17a2b8;
+}
+
+.info-message p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* No specialization selected */
+.no-specialization-selected {
+  margin: 1rem 0;
+}
+
+/* Loading doctors */
+.loading-doctors {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: #6c757d;
+}
+
+.loading-doctors i {
+  font-size: 2rem;
+  color: #007bff;
+}
+
+.loading-doctors p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* No doctors message */
+.no-doctors {
+  margin: 1rem 0;
+}
+
+/* Doctors Table Styles */
+.doctors-table-container {
+  margin: 1rem 0;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.doctors-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.doctors-table thead {
+  background: #f8f9fa;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.doctors-table th {
+  padding: 1rem 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.doctors-table tbody {
+  max-height: 300px; /* Approximately 5 rows at 60px each */
+  overflow-y: auto;
+  display: block;
+}
+
+.doctors-table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.doctors-table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.doctors-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.doctors-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.doctors-table tbody tr.selected {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.doctors-table td {
+  padding: 0.75rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.doctors-table th:nth-child(1),
+.doctors-table td:nth-child(1) {
+  width: 30%;
+  text-align: center;
+}
+
+.doctors-table th:nth-child(2),
+.doctors-table td:nth-child(2) {
+  width: 25%;
+  text-align: center;
+}
+
+.doctors-table th:nth-child(3),
+.doctors-table td:nth-child(3) {
+  width: 25%;
+  text-align: center;
+}
+
+.doctors-table th:nth-child(4),
+.doctors-table td:nth-child(4) {
+  width: 20%;
+  text-align: center;
+}
+
+.doctors-table td:nth-child(1) {
+  font-weight: 500;
+  color: #212529;
+}
+
+.doctors-table td:nth-child(2) {
+  color: #6c757d;
+}
+
+.doctors-table td:nth-child(3) {
+  color: #6c757d;
+}
+
+.doctors-table td:nth-child(4) {
+  font-weight: 600;
+  color: #28a745;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .doctors-table-container {
+    overflow-x: auto;
+  }
+  
+  .doctors-table {
+    min-width: 500px;
+  }
+  
+  .doctors-table th,
+  .doctors-table td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .doctors-table tbody {
+    max-height: 250px;
+  }
+}
