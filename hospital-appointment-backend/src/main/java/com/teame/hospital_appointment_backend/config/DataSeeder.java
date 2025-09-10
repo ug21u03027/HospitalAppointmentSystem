@@ -231,19 +231,19 @@ public class DataSeeder implements CommandLineRunner {
 
         // ---- Patients ----
         Patient patient1 = new Patient();
-        patient1.setName("Patient One");
+        patient1.setName("Mr. Aman Gupta");
         patient1.setAge(30);
         patient1.setContact("1111111111");
         patient1.setUser(patientUser1);
 
         Patient patient2 = new Patient();
-        patient2.setName("Patient Two");
+        patient2.setName("Mr. Ramesh Kumar");
         patient2.setAge(25);
         patient2.setContact("2222222222");
         patient2.setUser(patientUser2);
 
         Patient patient3 = new Patient();
-        patient3.setName("Patient Three");
+        patient3.setName("Mrs. Shreya Soni");
         patient3.setAge(40);
         patient3.setContact("3333333333");
         patient3.setUser(patientUser3);

@@ -95,12 +95,14 @@
           <div class="form-grid">
             <div class="input-group">
               <label for="date">Appointment Date *</label>
-              <input id="date" type="date" formControlName="date" [min]="today" />
+              <input id="date" type="date" formControlName="date" [min]="today" (change)="onDateChange()" />
             </div>
             <div class="input-group">
               <label for="time">Preferred Time *</label>
               <select id="time" formControlName="time" required>
                 <option value="" disabled>Select Time</option>
+                <option *ngIf="isLoadingSlots" value="" disabled>Loading available times...</option>
+                <option *ngIf="!isLoadingSlots && availableTimes.length === 0" value="" disabled>No available times for selected date</option>
                 <option *ngFor="let t of availableTimes" [value]="t">{{ t }}</option>
               </select>
             </div>

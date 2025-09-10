@@ -3,15 +3,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService, UserProfile } from '../../services/auth.service';
-import { AppointmentService } from '../../services/appointment.service';
+import { AppointmentService, AppointmentDto, PatientDto } from '../../services/appointment.service';
 
-interface Appointment {
-  appointmentId: number;
-  patientName: string;
-  date: string;
-  time: string;
-  status: 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
-  symptoms: string;
+interface DoctorAppointment extends AppointmentDto {
+  patientName?: string;
 }
 
 @Component({
@@ -22,10 +17,14 @@ interface Appointment {
   imports: [CommonModule]
 })
 export class AppointmentsComponent implements OnInit {
-  appointments: Appointment[] = [];
+  appointments: DoctorAppointment[] = [];
   userProfile: UserProfile | null = null;
   isLoading = false;
   errorMessage = '';
+  successMessage = '';
+  selectedPatient: PatientDto | null = null;
+  showPatientDetails = false;
+  selectedFilter = 'all';
 
   constructor(
     private authService: AuthService,
@@ -79,6 +78,7 @@ export class AppointmentsComponent implements OnInit {
     this.appointmentService.getDoctorAppointments(this.userProfile.doctorId).subscribe({
       next: (appointments) => {
         this.appointments = appointments;
+        this.loadPatientNames();
         this.isLoading = false;
       },
       error: (error) => {
@@ -89,29 +89,156 @@ export class AppointmentsComponent implements OnInit {
     });
   }
 
-  markCompleted(appointmentId: number) {
-    this.appointmentService.updateAppointmentStatus(appointmentId, 'COMPLETED').subscribe({
+  private loadPatientNames(): void {
+    this.appointments.forEach(appointment => {
+      this.appointmentService.getPatientById(appointment.patientId).subscribe({
+        next: (patient) => {
+          appointment.patientName = patient.name;
+        },
+        error: (error) => {
+          console.error('Error loading patient name:', error);
+          appointment.patientName = 'Unknown Patient';
+        }
+      });
+    });
+  }
+
+  approveAppointment(appointmentId: number) {
+    this.isLoading = true;
+    this.clearMessages();
+    
+    this.appointmentService.approveAppointment(appointmentId).subscribe({
       next: (response) => {
-        const appt = this.appointments.find(a => a.appointmentId === appointmentId);
-        if (appt) appt.status = 'COMPLETED';
+        const appt = this.appointments.find(a => a.id === appointmentId);
+        if (appt) appt.status = 'APPROVED';
+        this.successMessage = 'Appointment approved successfully.';
+        this.isLoading = false;
       },
       error: (error) => {
-        this.errorMessage = `Failed to update appointment: ${error.message}`;
-        console.error('Error updating appointment:', error);
+        this.errorMessage = `Failed to approve appointment: ${error.message}`;
+        this.isLoading = false;
+        console.error('Error approving appointment:', error);
       }
     });
   }
 
-  markCancelled(appointmentId: number) {
-    this.appointmentService.updateAppointmentStatus(appointmentId, 'CANCELLED').subscribe({
+  rejectAppointment(appointmentId: number) {
+    this.isLoading = true;
+    this.clearMessages();
+    
+    this.appointmentService.rejectAppointment(appointmentId).subscribe({
       next: (response) => {
-        const appt = this.appointments.find(a => a.appointmentId === appointmentId);
-        if (appt) appt.status = 'CANCELLED';
+        const appt = this.appointments.find(a => a.id === appointmentId);
+        if (appt) appt.status = 'REJECTED';
+        this.successMessage = 'Appointment rejected successfully.';
+        this.isLoading = false;
       },
       error: (error) => {
-        this.errorMessage = `Failed to update appointment: ${error.message}`;
-        console.error('Error updating appointment:', error);
+        this.errorMessage = `Failed to reject appointment: ${error.message}`;
+        this.isLoading = false;
+        console.error('Error rejecting appointment:', error);
       }
+    });
+  }
+
+  viewPatientDetails(patientId: number) {
+    this.appointmentService.getPatientById(patientId).subscribe({
+      next: (patient) => {
+        this.selectedPatient = patient;
+        this.showPatientDetails = true;
+      },
+      error: (error) => {
+        this.errorMessage = `Failed to load patient details: ${error.message}`;
+        console.error('Error loading patient details:', error);
+      }
+    });
+  }
+
+  closePatientDetails() {
+    this.showPatientDetails = false;
+    this.selectedPatient = null;
+  }
+
+  getStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending': return 'status-pending';
+      case 'approved': return 'status-approved';
+      case 'cancelled': return 'status-cancelled';
+      case 'rejected': return 'status-rejected';
+      case 'completed': return 'status-completed';
+      default: return 'status-unknown';
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'pending': return 'fa-clock';
+      case 'approved': return 'fa-check-circle';
+      case 'cancelled': return 'fa-times-circle';
+      case 'rejected': return 'fa-ban';
+      case 'completed': return 'fa-check-double';
+      default: return 'fa-question-circle';
+    }
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  }
+
+  formatTime(timeString: string): string {
+    return timeString; // Time is already in HH:mm format
+  }
+
+  canApproveOrReject(appointment: DoctorAppointment): boolean {
+    return appointment.status === 'PENDING';
+  }
+
+  private clearMessages(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+  }
+
+  filterAppointments(filter: string): void {
+    this.selectedFilter = filter;
+    // Filter logic is handled in the template using the filteredAppointments getter
+  }
+
+  get filteredAppointments(): DoctorAppointment[] {
+    let filtered = this.appointments;
+    
+    if (this.selectedFilter !== 'all') {
+      filtered = this.appointments.filter(appointment => {
+        switch (this.selectedFilter) {
+          case 'upcoming':
+            const appointmentDate = new Date(appointment.date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return appointmentDate >= today && (appointment.status === 'PENDING' || appointment.status === 'APPROVED');
+          case 'approved':
+            return appointment.status === 'APPROVED';
+          case 'cancelled':
+            return appointment.status === 'CANCELLED';
+          case 'rejected':
+            return appointment.status === 'REJECTED';
+          case 'completed':
+            return appointment.status === 'COMPLETED';
+          default:
+            return true;
+        }
+      });
+    }
+    
+    // Sort by date and time with earliest on top
+    return filtered.sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.time}`);
+      const dateB = new Date(`${b.date}T${b.time}`);
+      return dateA.getTime() - dateB.getTime();
     });
   }
 

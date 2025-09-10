@@ -2,6 +2,8 @@ package com.teame.hospital_appointment_backend.controllers;
 
 import com.teame.hospital_appointment_backend.models.dto.AppointmentDto;
 import com.teame.hospital_appointment_backend.models.dto.AppointmentRequest;
+import com.teame.hospital_appointment_backend.models.dto.SlotRequest;
+import com.teame.hospital_appointment_backend.models.dto.SlotResponse;
 import com.teame.hospital_appointment_backend.models.enums.AppointmentStatus;
 import com.teame.hospital_appointment_backend.security.CustomUserDetails;
 import com.teame.hospital_appointment_backend.services.AppointmentService;
@@ -12,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -98,5 +101,14 @@ public class AppointmentController {
         AppointmentDto rejectedAppointment = appointmentService
                 .approveOrRejectAppointment(appointmentId, AppointmentStatus.REJECTED, userDetails);
         return ResponseEntity.ok(rejectedAppointment);
+    }
+
+    // Get available time slots for a doctor on a specific date
+    @GetMapping("/slots")
+    @PreAuthorize("hasAnyRole('PATIENT','DOCTOR','ADMIN')")
+    public ResponseEntity<SlotResponse> getAvailableSlots(@RequestParam Long doctorId, @RequestParam String date) {
+        SlotRequest request = new SlotRequest(doctorId, LocalDate.parse(date));
+        SlotResponse slotResponse = appointmentService.getAvailableSlots(request);
+        return ResponseEntity.ok(slotResponse);
     }
 }

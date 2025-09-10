@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
-import { AppointmentService, AppointmentRequest, DoctorDto, UserProfile } from '../services/appointment.service';
+import { AppointmentService, AppointmentRequest, DoctorDto, UserProfile, SlotRequest, SlotResponse } from '../services/appointment.service';
 import { SpecializationService, SpecializationOption } from '../services/specialization.service';
 
 @Component({
@@ -24,10 +24,12 @@ export class BookAppointmentComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
-  availableTimes = [
-    '09:00', '10:00', '11:00',
-    '14:00', '15:00', '16:00',
-  ];
+  availableTimes: string[] = [];
+  isLoadingSlots = false;
+  
+  // Pending values from query parameters
+  pendingDoctorId: number | null = null;
+  pendingSymptoms: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -52,13 +54,18 @@ export class BookAppointmentComponent implements OnInit {
     
     // Handle query parameters for rescheduling
     this.route.queryParams.subscribe(params => {
-      if (params['doctorId']) {
-        this.appointmentForm.patchValue({
-          doctorId: +params['doctorId'],
-          date: params['date'] || '',
-          time: params['time'] || '',
-          symptoms: params['reason'] || params['symptoms'] || ''
-        });
+      // Store query parameters for later use
+      this.pendingDoctorId = params['doctorId'] ? +params['doctorId'] : null;
+      this.pendingSymptoms = params['reason'] || params['symptoms'] || '';
+      
+      // Handle specialization pre-selection
+      if (params['specialization']) {
+        this.selectedSpecialization = params['specialization'];
+        // Load doctors for the selected specialization
+        this.loadDoctorsBySpecialization(params['specialization']);
+      } else if (this.pendingDoctorId) {
+        // If no specialization but doctorId is provided, load all doctors
+        this.loadAllDoctors();
       }
     });
   }
@@ -112,6 +119,9 @@ export class BookAppointmentComponent implements OnInit {
         this.doctors = doctors;
         this.filteredDoctors = doctors;
         this.isLoading = false;
+        
+        // Apply pending values after doctors are loaded
+        this.applyPendingValues();
       },
       error: (error) => {
         console.error('Error loading all doctors:', error);
@@ -132,6 +142,9 @@ export class BookAppointmentComponent implements OnInit {
         this.doctors = doctors;
         this.filteredDoctors = doctors;
         this.isLoading = false;
+        
+        // Apply pending values after doctors are loaded
+        this.applyPendingValues();
       },
       error: (error) => {
         console.error('Error loading doctors:', error);
@@ -141,9 +154,41 @@ export class BookAppointmentComponent implements OnInit {
     });
   }
 
+  private applyPendingValues(): void {
+    if (this.pendingDoctorId) {
+      // Check if the pending doctor exists in the loaded doctors
+      const doctorExists = this.doctors.some(d => d.doctorId === this.pendingDoctorId);
+      if (doctorExists) {
+        this.appointmentForm.patchValue({
+          doctorId: this.pendingDoctorId,
+          symptoms: this.pendingSymptoms
+        });
+        console.log('Applied pending values:', {
+          doctorId: this.pendingDoctorId,
+          symptoms: this.pendingSymptoms
+        });
+      } else {
+        console.warn('Pending doctor not found in loaded doctors:', this.pendingDoctorId);
+      }
+      
+      // Clear pending values
+      this.pendingDoctorId = null;
+      this.pendingSymptoms = '';
+    }
+  }
+
   selectDoctor(doctorId: number): void {
     this.appointmentForm.patchValue({ doctorId: doctorId });
     this.clearMessages();
+    // Clear time selection when doctor changes
+    this.appointmentForm.patchValue({ time: '' });
+    this.availableTimes = [];
+    
+    // Load available slots if date is already selected
+    const date = this.appointmentForm.get('date')?.value;
+    if (date) {
+      this.loadAvailableSlots(doctorId, date);
+    }
   }
 
   onSpecializationChange(newValue: string): void {
@@ -163,6 +208,58 @@ export class BookAppointmentComponent implements OnInit {
       console.log('Loading doctors for specialization:', this.selectedSpecialization);
       this.loadDoctorsBySpecialization(this.selectedSpecialization);
     }
+  }
+
+  onDateChange(): void {
+    const doctorId = this.appointmentForm.get('doctorId')?.value;
+    const date = this.appointmentForm.get('date')?.value;
+    
+    // Clear time selection when date changes
+    this.appointmentForm.patchValue({ time: '' });
+    this.availableTimes = [];
+    
+    // Load available slots if both doctor and date are selected
+    if (doctorId && date) {
+      this.loadAvailableSlots(doctorId, date);
+    }
+  }
+
+  onDoctorChange(): void {
+    const doctorId = this.appointmentForm.get('doctorId')?.value;
+    const date = this.appointmentForm.get('date')?.value;
+    
+    // Clear time selection when doctor changes
+    this.appointmentForm.patchValue({ time: '' });
+    this.availableTimes = [];
+    
+    // Load available slots if both doctor and date are selected
+    if (doctorId && date) {
+      this.loadAvailableSlots(doctorId, date);
+    }
+  }
+
+  private loadAvailableSlots(doctorId: number, date: string): void {
+    this.isLoadingSlots = true;
+    this.errorMessage = '';
+    
+    const slotRequest: SlotRequest = {
+      doctorId: doctorId,
+      date: date
+    };
+    
+    this.appointmentService.getAvailableSlots(slotRequest).subscribe({
+      next: (response: SlotResponse) => {
+        this.availableTimes = response.availableSlots;
+        this.isLoadingSlots = false;
+        console.log('Available slots loaded:', response);
+      },
+      error: (error) => {
+        console.error('Error loading available slots:', error);
+        this.errorMessage = `Failed to load available time slots: ${error.message}`;
+        this.isLoadingSlots = false;
+        this.availableTimes = [];
+      }
+    });
   }
 
   onBook(): void {

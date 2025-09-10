@@ -58,10 +58,7 @@ public class SecurityConfig {
                                 , "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/doctors/register").permitAll()
 
-                        // Role-based access
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
-                        .requestMatchers("/api/patient/**").hasRole("PATIENT")
+
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)

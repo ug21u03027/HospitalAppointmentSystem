@@ -1,51 +1,122 @@
-<div class="patient-history-bg">
-  <h2>Patient History</h2>
-  <button class="back-btn" (click)="goBack()">Back to Dashboard</button>
-  
-  <!-- Error Message -->
-  <div *ngIf="errorMessage" class="alert alert-error">
-    <i class="fa-solid fa-exclamation-triangle"></i>
-    {{ errorMessage }}
+<div class="appointments-page">
+  <div class="container">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <div class="nav-breadcrumb">
+        <button class="btn btn-outline btn-sm" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to Dashboard
+        </button>
+      </div>
+      <div class="nav-user-info">
+        <span class="page-title">Patient History</span>
+      </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="appointments-header">
+      <h1 class="appointments-title">Patient History</h1>
+      <p class="appointments-subtitle">View your patients' approved appointment history and details</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      <p>Loading patient history...</p>
+    </div>
+
+    <!-- Patient History Table -->
+    <div *ngIf="!isLoading" class="appointments-container">
+      <ng-container *ngIf="patientHistory && patientHistory.length > 0; else noHistory">
+        <div class="table-container">
+          <table class="appointments-table">
+            <thead>
+              <tr>
+                <th>Patient Name</th>
+                <th>Last Visit</th>
+                <th>Last Visit Time</th>
+                <th>Last Symptoms</th>
+                <th>Appointments</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let patient of patientHistory" class="appointment-row">
+                <td class="patient-cell">
+                  <div class="patient-info">
+                    <button class="patient-name-btn" (click)="viewPatientDetails(patient.patientId)">
+                      <strong>{{ patient.patientName || 'Loading...' }}</strong>
+                    </button>
+                  </div>
+                </td>
+                <td class="date-cell">
+                  {{ formatDate(patient.lastAppointmentDate) }}
+                </td>
+                <td class="time-cell">
+                  {{ formatTime(patient.lastAppointmentTime) }}
+                </td>
+                <td class="symptoms-cell">
+                  <div class="symptoms-text" [title]="patient.symptoms">
+                    {{ patient.symptoms.length > 50 ? (patient.symptoms | slice:0:50) + '...' : patient.symptoms }}
+                  </div>
+                </td>
+                <td class="total-cell">
+                  <span class="total-badge">{{ patient.approvedAppointments }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+
+      <ng-template #noHistory>
+        <div class="no-appointments">
+          <i class="fa-solid fa-user-xmark"></i>
+          <h3>No Approved Appointments Found</h3>
+          <p>You don't have any approved appointments with patients yet.</p>
+        </div>
+      </ng-template>
+    </div>
   </div>
 
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading">
-    <i class="fa-solid fa-spinner fa-spin"></i>
-    Loading patient history...
-  </div>
-
-  <!-- Patient History Table -->
-  <div *ngIf="!isLoading && patientHistory.length > 0" class="patient-history-table">
-    <table>
-      <thead>
-        <tr>
-          <th>Patient Name</th>
-          <th>Last Visit</th>
-          <th>Last Visit Time</th>
-          <th>Last Symptoms</th>
-          <th>Status</th>
-          <th>Total Appointments</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let patient of patientHistory">
-          <td>{{ patient.patientName }}</td>
-          <td>{{ patient.lastAppointmentDate }}</td>
-          <td>{{ patient.lastAppointmentTime }}</td>
-          <td>{{ patient.symptoms }}</td>
-          <td>
-            <span class="status-badge" [ngClass]="'status-' + patient.status.toLowerCase()">
-              {{ patient.status }}
-            </span>
-          </td>
-          <td>{{ patient.totalAppointments }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- No Patient History Message -->
-  <div *ngIf="!isLoading && patientHistory.length === 0" class="no-history">
-    <p>No patient history found.</p>
+  <!-- Patient Details Modal -->
+  <div *ngIf="showPatientDetails" class="modal-overlay" (click)="closePatientDetails()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Patient Details</h3>
+        <button class="modal-close" (click)="closePatientDetails()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedPatient">
+        <div class="patient-header">
+          <h3 class="patient-title">{{ selectedPatient.name }}</h3>
+          <p class="patient-subtitle">Patient Information</p>
+        </div>
+        
+        <div class="patient-info">
+          <div class="info-group">
+            <label class="info-label">Age</label>
+            <div class="info-value">{{ selectedPatient.age }} years old</div>
+          </div>
+          
+          <div class="info-group">
+            <label class="info-label">Contact</label>
+            <div class="info-value">{{ selectedPatient.contact }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closePatientDetails()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back
+        </button>
+      </div>
+    </div>
   </div>
 </div>

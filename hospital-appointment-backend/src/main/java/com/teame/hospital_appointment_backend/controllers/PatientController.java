@@ -25,7 +25,7 @@ public class PatientController {
 
     // GET api/patients/{id}
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN','PATIENT','DOCTOR')")
     public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id,
                                                      @AuthenticationPrincipal CustomUserDetails userDetails) {
         PatientDto patientDto = patientService.getPatientById(id, userDetails);

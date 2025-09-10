@@ -1,39 +1,130 @@
 <div class="page">
   <h1>Manage Patients</h1>
 
-  <!-- Add or Edit Form -->
-  <div class="form-container">
-<input type="text" [(ngModel)]="currentPatient.name" placeholder="Name" />
-<input type="number" [(ngModel)]="currentPatient.age" placeholder="Age" />
-<input type="email" [(ngModel)]="currentPatient.email" placeholder="Email" />
+  <!-- Search Section -->
+  <div class="search-container">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery" 
+        placeholder="Search patients by name, email, or phone..." 
+        (input)="onSearch()"
+        class="search-input" />
+      <button (click)="clearSearch()" class="clear-btn" *ngIf="searchQuery">✕</button>
+    </div>
+  </div>
 
-  <button *ngIf="!editingPatient" (click)="addPatient()">Add Patient</button>
-  <button *ngIf="editingPatient" (click)="updatePatient()">Update Patient</button>
-</div>
+  <!-- Error and Success Messages -->
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <i class="fa-solid fa-exclamation-triangle"></i>
+    {{ errorMessage }}
+  </div>
+  
+  <div *ngIf="successMessage" class="alert alert-success">
+    <i class="fa-solid fa-check-circle"></i>
+    {{ successMessage }}
+  </div>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <p>Loading patients...</p>
+  </div>
 
-  <!-- Table -->
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Email</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let patient of patients">
-        <td>{{ patient.name }}</td>
-        <td>{{ patient.age }}</td>
-        <td>{{ patient.email }}</td>
-        <td>
-          <button (click)="editPatient(patient)">Edit</button>
-          <button (click)="deletePatient(patient.id)">Delete</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Search Results -->
+  <div *ngIf="!isLoading && searchResults.length > 0" class="search-results">
+    <h3>Patient Search Results ({{ searchResults.length }} found)</h3>
+    
+    <!-- Multiple Results - Show Selection -->
+    <div *ngIf="searchResults.length > 1" class="user-selection">
+      <div *ngFor="let user of searchResults" class="user-card" (click)="selectUser(user)">
+        <div class="user-info">
+          <h4>{{ user.name }}</h4>
+          <p>{{ user.email }}</p>
+          <span class="user-role">{{ user.role }}</span>
+          <span class="user-status" [ngClass]="'status-' + user.accountStatus.toLowerCase()">
+            {{ user.accountStatus }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Single Result - Show Profile -->
+    <div *ngIf="searchResults.length === 1" class="user-profile">
+      <div class="profile-header">
+        <h3>{{ selectedUser?.name }}</h3>
+        <span class="user-status" [ngClass]="'status-' + (selectedUser?.accountStatus || '').toLowerCase()">
+          {{ selectedUser?.accountStatus }}
+        </span>
+      </div>
+      
+      <div class="profile-details">
+        <div class="detail-row">
+          <label>Name:</label>
+          <span>{{ selectedUser?.name }}</span>
+        </div>
+        <div class="detail-row">
+          <label>Role:</label>
+          <span>{{ selectedUser?.role }}</span>
+        </div>
+        <div class="detail-row">
+          <label>Username:</label>
+          <span>{{ selectedUser?.username }}</span>
+        </div>
+        <div class="detail-row">
+          <label>Email:</label>
+          <span>{{ selectedUser?.email }}</span>
+        </div>
+        <div class="detail-row" *ngIf="selectedUser?.age">
+          <label>Age:</label>
+          <span>{{ selectedUser?.age }}</span>
+        </div>
+        <div class="detail-row" *ngIf="selectedUser?.phone">
+          <label>Phone:</label>
+          <span>{{ selectedUser?.phone }}</span>
+        </div>
+        <div class="detail-row">
+          <label>Account Status:</label>
+          <span class="user-status" [ngClass]="'status-' + (selectedUser?.accountStatus || '').toLowerCase()">
+            {{ selectedUser?.accountStatus }}
+          </span>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button 
+          *ngIf="selectedUser?.accountStatus === 'ACTIVATED'"
+          (click)="blockUser(selectedUser!)" 
+          class="btn btn-danger"
+          [disabled]="isLoading">
+          <i class="fa-solid fa-ban"></i>
+          Block Account
+        </button>
+        <button 
+          *ngIf="selectedUser?.accountStatus === 'BLOCKED'"
+          (click)="activateUser(selectedUser!)" 
+          class="btn btn-success"
+          [disabled]="isLoading">
+          <i class="fa-solid fa-check"></i>
+          Activate Account
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="!isLoading && searchQuery && searchResults.length === 0" class="no-results">
+    <i class="fa-solid fa-search"></i>
+    <h3>No patients found</h3>
+    <p>No patients match your search criteria.</p>
+  </div>
+
+  <!-- Initial State -->
+  <div *ngIf="!isLoading && !searchQuery" class="initial-state">
+    <i class="fa-solid fa-search"></i>
+    <h3>Search for Patients</h3>
+    <p>Enter a name, email, or phone to search for patients.</p>
+  </div>
 
   <button class="back" (click)="goBack()">⬅ Back to Dashboard</button>
 </div>

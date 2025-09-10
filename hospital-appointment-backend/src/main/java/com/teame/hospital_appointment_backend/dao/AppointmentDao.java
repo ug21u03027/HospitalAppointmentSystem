@@ -21,5 +21,9 @@ public interface AppointmentDao extends JpaRepository<Appointment, Long> {
                                                                      LocalTime time,
                                                                      AppointmentStatus status);
 
+    List<Appointment> findByDoctor_DoctorIdAndDateAndStatusNot(Long doctorId,
+                                                              LocalDate date,
+                                                              AppointmentStatus status);
+
     List<Appointment> findByPatient(Patient patient);
 }

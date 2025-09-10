@@ -8,12 +8,15 @@ import com.teame.hospital_appointment_backend.dao.DoctorDao;
 import com.teame.hospital_appointment_backend.dao.PatientDao;
 import com.teame.hospital_appointment_backend.models.dto.AppointmentDto;
 import com.teame.hospital_appointment_backend.models.dto.AppointmentRequest;
+import com.teame.hospital_appointment_backend.models.dto.SlotRequest;
+import com.teame.hospital_appointment_backend.models.dto.SlotResponse;
 import com.teame.hospital_appointment_backend.models.entities.Appointment;
 import com.teame.hospital_appointment_backend.models.entities.Doctor;
 import com.teame.hospital_appointment_backend.models.entities.Patient;
 import com.teame.hospital_appointment_backend.models.entities.User;
 import com.teame.hospital_appointment_backend.models.enums.AppointmentStatus;
 import com.teame.hospital_appointment_backend.models.enums.Role;
+import com.teame.hospital_appointment_backend.models.enums.TimeSlot;
 import com.teame.hospital_appointment_backend.security.CustomUserDetails;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -201,5 +207,43 @@ public class AppointmentService {
                 );
 
         return existingAppointments.isEmpty();
+    }
+
+    public SlotResponse getAvailableSlots(SlotRequest request) {
+        // Validate doctor exists
+        Doctor doctor = doctorDao.findById(request.getDoctorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+
+        // Get all time slots
+        List<String> allSlots = Arrays.stream(TimeSlot.values())
+                .map(TimeSlot::getTime)
+                .collect(Collectors.toList());
+
+        // Get existing appointments for the doctor on the specified date
+        List<Appointment> existingAppointments = appointmentDao
+                .findByDoctor_DoctorIdAndDateAndStatusNot(
+                        request.getDoctorId(),
+                        request.getDate(),
+                        AppointmentStatus.CANCELLED
+                );
+
+        // Get booked time slots
+        List<String> bookedSlots = existingAppointments.stream()
+                .map(appointment -> appointment.getTime().toString())
+                .collect(Collectors.toList());
+
+        // Get available slots (all slots minus booked slots)
+        List<String> availableSlots = allSlots.stream()
+                .filter(slot -> !bookedSlots.contains(slot))
+                .collect(Collectors.toList());
+
+        // Create and return response
+        SlotResponse response = new SlotResponse();
+        response.setDoctorId(request.getDoctorId());
+        response.setDate(request.getDate().toString());
+        response.setAvailableSlots(availableSlots);
+        response.setBookedSlots(bookedSlots);
+
+        return response;
     }
 }
