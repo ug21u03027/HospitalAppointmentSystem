@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface LoginRequest { username: string; password: string; }
 export interface AuthResponse {
@@ -60,10 +61,10 @@ export interface DoctorUpdateRequest {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly baseUrl = 'http://localhost:8080/api/auth';
-  private readonly userUrl = 'http://localhost:8080/api/user';
-  private readonly patientUrl = 'http://localhost:8080/api/patients';
-  private readonly doctorUrl = 'http://localhost:8080/api/doctors';
+private readonly baseUrl = `${environment.apiUrl}/auth`;
+private readonly userUrl = `${environment.apiUrl}/user`;
+private readonly patientUrl = `${environment.apiUrl}/patients`;
+private readonly doctorUrl = `${environment.apiUrl}/doctors`;
 
   constructor(private http: HttpClient) {}
 
