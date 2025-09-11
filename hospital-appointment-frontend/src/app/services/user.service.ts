@@ -86,7 +86,8 @@ export class UserService {
       return throwError(() => new Error('No authentication token found'));
     }
     
-    return this.http.get<UserProfile>(`${this.baseUrl}/doctors/${doctorId}`, {
+    // Use the doctors endpoint since /api/user/doctors/{doctorId} doesn't exist in backend
+    return this.http.get<UserProfile>(`${environment.apiUrl}/doctors/${doctorId}`, {
       headers: { 'Authorization': `Bearer ${token}` }
     }).pipe(catchError(this.handleError.bind(this)));
   }
