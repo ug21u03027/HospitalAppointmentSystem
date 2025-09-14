@@ -77,6 +77,126 @@
   color: white;
 }
 
+/* Navigation Controls Container */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+/* Hamburger Menu Styles */
+.hamburger-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: none; /* Hidden by default on desktop */
+  flex-direction: column;
+  gap: 4px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.hamburger-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.hamburger-toggle span {
+  width: 25px;
+  height: 3px;
+  background: white;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.hamburger-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Logout Button */
+.logout-btn {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 16px; /* Match other navigation options */
+  display: none; /* Hidden by default on desktop */
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Desktop logout in navigation menu */
+.desktop-logout {
+  display: block; /* Always visible on desktop */
+}
+
+@media (max-width: 768px) {
+  .desktop-logout {
+    display: none; /* Hidden on mobile since we have the separate logout button */
+  }
+}
+
+/* Navigation Menu */
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.nav-menu.hidden {
+  max-height: 0;
+  opacity: 0;
+}
+
+.nav-menu:not(.hidden) {
+  max-height: 500px;
+  opacity: 1;
+}
+
+.nav-menu li {
+  margin: 8px 0;
+}
+
+.nav-menu a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: all 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  word-break: keep-all;
+}
+
+.nav-menu a:hover {
+  background: #2f3b4a;
+  transform: translateX(5px);
+}
+
+.nav-menu a.active {
+  background: #1a75ff;
+  color: white;
+}
+
 /* Main Content */
 .main-content {
   flex: 1;
@@ -180,5 +300,14 @@
   .stat-card {
     flex-direction: column;
     text-align: center;
+  }
+  
+  /* Show hamburger menu and logout button on mobile */
+  .hamburger-toggle {
+    display: flex;
+  }
+  
+  .logout-btn {
+    display: block;
   }
 }

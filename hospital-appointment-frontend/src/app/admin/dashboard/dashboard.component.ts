@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,9 @@ import { AuthService } from '../../services/auth.service';
 export class DashboardComponent implements OnInit {
   userName: string = 'Admin';
   isLoggedIn: boolean = false;
+  
+  // Navigation menu state
+  isNavMenuOpen: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -59,5 +62,19 @@ export class DashboardComponent implements OnInit {
       localStorage.removeItem('userId');
     }
     this.router.navigate(['/login']);
+  }
+
+  // Toggle navigation menu
+  toggleNavMenu(): void {
+    this.isNavMenuOpen = !this.isNavMenuOpen;
+  }
+
+  // Listen for window resize events
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    // If screen width is greater than 768px (desktop), show the menu
+    if (event.target.innerWidth > 768) {
+      this.isNavMenuOpen = true;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -20,6 +20,9 @@ export class PatientDashboardComponent implements OnInit {
   doctorsConsulted: number = 0;
   totalVisits: number = 0;
   isLoadingStats: boolean = true;
+  
+  // Navigation menu state
+  isNavMenuOpen: boolean = false;
 
   constructor(
     private authService: AuthService, 
@@ -133,6 +136,20 @@ export class PatientDashboardComponent implements OnInit {
     this.totalVisits = appointments.filter(appointment => 
       appointment.status === 'COMPLETED'
     ).length;
+  }
+
+  // Toggle navigation menu
+  toggleNavMenu(): void {
+    this.isNavMenuOpen = !this.isNavMenuOpen;
+  }
+
+  // Listen for window resize events
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    // If screen width is greater than 768px (desktop), show the menu
+    if (event.target.innerWidth > 768) {
+      this.isNavMenuOpen = true;
+    }
   }
 }
 

@@ -6,13 +6,27 @@
       <p>Welcome, {{ userName || 'Patient' }}</p>
       <small>Patient</small>
     </div>
-    <ul>
+    
+    <!-- Hamburger Menu Toggle and Logout Container -->
+    <div class="nav-controls">
+      <button class="hamburger-toggle" (click)="toggleNavMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Logout button - always visible -->
+      <a class="logout-btn" (click)="logout()" style="cursor: pointer;">🔒 Logout</a>
+    </div>
+    
+    <!-- Navigation Menu -->
+    <ul class="nav-menu" [class.hidden]="!isNavMenuOpen">
       <li><a routerLink="/patient-dashboard" class="active">📊 Dashboard</a></li>
       <li><a routerLink="/book-appointment">📅 Book Appointment</a></li>
       <li><a routerLink="/recommend-specialist">🔍 Recommend Specialist</a></li>
       <li><a routerLink="/appointments">📋 My Appointments</a></li>
       <li><a routerLink="/profile">👤 View Profile</a></li>
-      <li><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
+      <li class="desktop-logout"><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
     </ul>
   </div>
 
