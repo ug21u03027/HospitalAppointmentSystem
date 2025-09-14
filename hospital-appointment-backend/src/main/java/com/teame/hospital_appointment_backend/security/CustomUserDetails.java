@@ -38,7 +38,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.getStatus() != AccountStatus.BLOCKED;
+        return true; // Allow all users to pass through, handle blocking in custom logic
     }
 
     @Override
@@ -48,7 +48,9 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.getStatus() == AccountStatus.ACTIVATED;
+        return user.getStatus() == AccountStatus.ACTIVATED || 
+               user.getStatus() == AccountStatus.PENDING || 
+               user.getStatus() == AccountStatus.BLOCKED;
     }
 
     public User getUser() {

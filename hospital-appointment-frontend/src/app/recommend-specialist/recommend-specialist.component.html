@@ -1,0 +1,146 @@
+<div class="recommend-specialist">
+  <div class="container">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <div class="nav-breadcrumb">
+        <button class="btn btn-outline btn-sm" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>AI Specialist Recommendation</h1>
+      <p>Get personalized specialist recommendations based on your symptoms and images</p>
+    </div>
+
+    <!-- Error and Success Messages -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fa-solid fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </div>
+    
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="fa-solid fa-check-circle"></i>
+      {{ successMessage }}
+    </div>
+
+
+    <!-- Recommendation Form -->
+    <div class="recommendation-form" *ngIf="!recommendedSpecialization">
+      <form [formGroup]="recommendForm" (ngSubmit)="onSubmit()">
+        <!-- Symptoms Input -->
+        <div class="form-section">
+          <h3>Describe Your Symptoms *</h3>
+          <div class="input-group">
+            <textarea 
+              id="symptoms" 
+              formControlName="symptoms" 
+              placeholder="List symptoms (comma separated)"
+              maxlength="100"
+              required>
+            </textarea>
+            <div class="character-count">
+              <small class="small-muted">
+                {{ recommendForm.get('symptoms')?.value?.length || 0 }}/100 characters
+              </small>
+            </div>
+            <div *ngIf="recommendForm.get('symptoms')?.invalid && recommendForm.get('symptoms')?.touched" class="error-message">
+              <i class="fa-solid fa-exclamation-circle"></i>
+              <span *ngIf="recommendForm.get('symptoms')?.errors?.['required']">Symptoms description is required</span>
+              <span *ngIf="recommendForm.get('symptoms')?.errors?.['minlength']">Please provide at least 5 characters</span>
+              <span *ngIf="recommendForm.get('symptoms')?.errors?.['maxlength']">Please limit to 100 characters maximum</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="form-section">
+          <h3>Upload Symptom Image (Optional)</h3>
+          <div class="input-group">
+            <div class="file-upload-container">
+              <input 
+                type="file" 
+                id="image" 
+                accept="image/*" 
+                (change)="onFileSelected($event)"
+                class="file-input">
+              <label for="image" class="file-upload-label">
+                <div *ngIf="!selectedFile" class="upload-placeholder">
+                  <i class="fa-solid fa-cloud-upload-alt"></i>
+                  <span>Choose Image File</span>
+                </div>
+                <div *ngIf="selectedFile" class="image-preview">
+                  <div class="selected-label">
+                    <span>Selected Image</span>
+                  </div>
+                  <div class="image-container">
+                    <img [src]="imagePreview" [alt]="selectedFile.name" class="preview-image">
+                    <div class="image-overlay">
+                      <span class="file-name">{{ selectedFile.name }}</span>
+                    </div>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div class="file-info">
+              <i class="fa-solid fa-info-circle"></i>
+              <span>Maximum file size: 3MB. Supported formats: JPEG, PNG, GIF</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="recommendForm.invalid || isLoading">
+            <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
+            <i *ngIf="!isLoading" class="fa-solid fa-search"></i>
+            {{ isLoading ? 'Analyzing...' : 'Get Recommendation' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Recommendation Result -->
+    <div class="recommendation-result" *ngIf="recommendedSpecialization">
+      <div class="result-card">
+        <div class="result-header">
+          <i class="fa-solid fa-user-md result-icon"></i>
+          <h2>Recommended Specialist</h2>
+        </div>
+        
+        <div class="specialization-display">
+          <div class="specialization-badge">
+            {{ formatSpecialization(recommendedSpecialization) }}
+          </div>
+          <p class="specialization-description">
+            Based on your symptoms{{ selectedFile ? ' and the uploaded image' : '' }}, 
+            we recommend consulting with a <strong>{{ formatSpecialization(recommendedSpecialization) }}</strong>.
+          </p>
+        </div>
+
+        <div class="result-actions">
+          <div class="book-appointment-section">
+            <button 
+              class="btn btn-primary"
+              (click)="onBookAppointment()">
+              <i class="fa-solid fa-calendar-plus"></i>
+              Book Appointment
+            </button>
+            <span class="specialist-text">with a {{ formatSpecialization(recommendedSpecialization) }}</span>
+          </div>
+          <button 
+            class="btn btn-secondary"
+            (click)="recommendedSpecialization = null">
+            <i class="fa-solid fa-redo"></i>
+            Get Another Recommendation
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,7 @@ import { ViewProfileComponent } from './view-profile/view-profile.component';
 import { DoctorDashboardComponent } from './doctor/appointments/doctor-dashboard/doctor-dashboard.component';
 import { AppointmentsComponent as DoctorAppointmentsComponent } from './doctor/appointments/appointments.component';
 import { PatientHistoryComponent } from './doctor/appointments/patient-history/patient-history.component';
+import { RecommendSpecialistComponent } from './recommend-specialist/recommend-specialist.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,6 +22,7 @@ export const routes: Routes = [
   { path: 'book-appointment', component: BookAppointmentComponent },
   { path: 'appointments', component: AppointmentsComponent },
   { path: 'profile', component: ViewProfileComponent },
+  { path: 'recommend-specialist', component: RecommendSpecialistComponent },
   { path: 'manage-doctors', component: ManageDoctorsComponent },
   { path: 'manage-patients', component: ManagePatientsComponent },
   // Doctor specific routes

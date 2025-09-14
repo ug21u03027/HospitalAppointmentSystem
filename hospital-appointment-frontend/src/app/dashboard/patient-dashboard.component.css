@@ -8,7 +8,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
+  width: 280px;
   background: #1e2a38;
   color: white;
   padding: 20px;
@@ -60,6 +60,11 @@
   padding: 12px 15px;
   border-radius: 8px;
   transition: all 0.3s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  word-break: keep-all;
 }
 
 .sidebar ul li a:hover {
@@ -151,28 +156,7 @@
   line-height: 1.4;
 }
 
-.action-btn {
-  padding: 10px 20px;
-  font-size: 14px;
-  background: #1a75ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  font-weight: 500;
-}
-
-.action-btn:hover:not(:disabled) {
-  background: #005ce6;
-  transform: translateY(-2px);
-}
-
-.action-btn:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+/* Dashboard buttons now use global .btn-dashboard class */
 
 /* Quick Info in stat card */
 .quick-info {
@@ -208,4 +192,19 @@
     flex-direction: column;
     text-align: center;
   }
+}
+
+/* Loading stats styles */
+.loading-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.loading-stats i {
+  font-size: 1rem;
 }

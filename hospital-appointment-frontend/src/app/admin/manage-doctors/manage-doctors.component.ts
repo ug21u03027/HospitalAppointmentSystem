@@ -52,7 +52,8 @@ export class ManageDoctorsComponent implements OnInit {
   }
 
   onSearch(): void {
-    if (!this.searchQuery.trim() && !this.selectedSpecialization) {
+    // If no search query and no specialization filter (or placeholder), show no results
+    if (!this.searchQuery.trim() && (!this.selectedSpecialization || this.selectedSpecialization === '')) {
       this.searchResults = [];
       this.selectedUser = null;
       return;
@@ -65,8 +66,8 @@ export class ManageDoctorsComponent implements OnInit {
         return false;
       }
 
-      // Check specialization filter
-      if (this.selectedSpecialization && user.specialization !== this.selectedSpecialization) {
+      // Check specialization filter (only if a specific specialization is selected, not "all")
+      if (this.selectedSpecialization && this.selectedSpecialization !== '' && this.selectedSpecialization !== 'all' && user.specialization !== this.selectedSpecialization) {
         return false;
       }
 
@@ -77,7 +78,7 @@ export class ManageDoctorsComponent implements OnInit {
                (user.phone && user.phone.toLowerCase().includes(query));
       }
 
-      // If only specialization filter is applied
+      // If only specialization filter is applied (including "all")
       return true;
     });
 

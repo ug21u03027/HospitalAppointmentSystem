@@ -18,6 +18,7 @@ export class SignupComponent implements OnInit {
   message = '';
   messageColor = 'red';
   specializations: SpecializationOption[] = [];
+  isLoading = false;
 
   constructor(private auth: AuthService, private router: Router, private fb: FormBuilder, private specializationService: SpecializationService) {
     this.registerForm = this.fb.group({
@@ -170,12 +171,18 @@ export class SignupComponent implements OnInit {
   }
 
   signup() {
+    if (this.isLoading) return;
+    
     this.submitted = true;
     if (!this.isSubmittable()) {
       this.messageColor = 'red';
       this.message = 'Please correct the errors above.';
       return;
     }
+    
+    this.isLoading = true;
+    this.message = '';
+    
     const v = this.registerForm.value;
     const payload: RegisterRequest = {
       username: v.username,
@@ -192,6 +199,7 @@ export class SignupComponent implements OnInit {
     };
     this.auth.register(payload).subscribe({
       next: (res) => {
+        this.isLoading = false;
         if (res?.accessToken && res.role === 'PATIENT') {
           // Auto-login for patient only per backend behavior
           if (typeof window !== 'undefined') {
@@ -205,27 +213,24 @@ export class SignupComponent implements OnInit {
           this.router.navigate(['/patient-dashboard']);
           return;
         }
-        if (res?.accessToken && res.role === 'DOCTOR') {
-          // Auto-login for doctor
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('accessToken', res.accessToken || '');
-            localStorage.setItem('tokenType', res.tokenType || 'Bearer');
-            localStorage.setItem('role', res.role);
-            localStorage.setItem('username', res.username);
-            localStorage.setItem('email', res.email || '');
-            localStorage.setItem('userId', String(res.userId));
-          }
-          this.router.navigate(['/doctor-dashboard']);
+        
+        // For DOCTOR and ADMIN roles, show pending approval message
+        if (res?.role === 'DOCTOR' || res?.role === 'ADMIN') {
+          this.messageColor = 'green';
+          this.message = 'Your account has been created and is awaiting admin approval.';
           return;
         }
-      this.messageColor = 'green';
+        
+        // For other cases (if any)
+        this.messageColor = 'green';
         this.message = res?.message || 'Registration successful. Please login.';
         setTimeout(() => this.router.navigateByUrl('/login'), 800);
       },
       error: (err) => {
-      this.messageColor = 'red';
+        this.isLoading = false;
+        this.messageColor = 'red';
         this.message = err?.error?.message || 'Signup failed. Please try again.';
-    }
+      }
     });
   }
 }

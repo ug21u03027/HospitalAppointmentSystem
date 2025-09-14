@@ -6,7 +6,9 @@
     </div>
 
     <form class="signup-form" [formGroup]="registerForm" (ngSubmit)="signup()">
-      <!-- Basic Information Section -->
+      <!-- Registration Form Content - Hidden when showing activation card -->
+      <div *ngIf="!(message && messageColor === 'green' && message.includes('awaiting admin approval'))">
+        <!-- Basic Information Section -->
       <div class="form-section">
         <h3>Basic Information</h3>
         <div class="form-grid">
@@ -99,9 +101,10 @@
 
       <!-- Form Actions -->
       <div class="btn-group">
-        <button type="submit" class="btn-primary" [disabled]="!isSubmittable()">
-          <i class="fa-solid fa-user-check"></i>
-          Register
+        <button type="submit" class="btn-primary" [disabled]="!isSubmittable() || isLoading">
+          <i *ngIf="!isLoading" class="fa-solid fa-user-check"></i>
+          <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
+          {{ isLoading ? 'Registering...' : 'Register' }}
         </button>
         <a class="btn-secondary" [routerLink]="['/login']">
           <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -109,17 +112,34 @@
         </a>
       </div>
 
-      <!-- Error Summary -->
-      <div *ngIf="submitted && getFormErrors().length" class="form-errors">
-        <h4>Please correct the following errors:</h4>
-        <ul>
-          <li *ngFor="let error of getFormErrors()">{{ error }}</li>
-        </ul>
+        <!-- Error Summary -->
+        <div *ngIf="submitted && getFormErrors().length" class="form-errors">
+          <h4>Please correct the following errors:</h4>
+          <ul>
+            <li *ngFor="let error of getFormErrors()">{{ error }}</li>
+          </ul>
+        </div>
       </div>
 
       <!-- Success/Error Message -->
       <div *ngIf="message" class="message" [ngClass]="messageColor === 'red' ? 'error' : 'success'">
         {{ message }}
+      </div>
+
+      <!-- Account Activation Message Card -->
+      <div *ngIf="message && messageColor === 'green' && message.includes('awaiting admin approval')" class="activation-card">
+        <div class="activation-content">
+          <div class="activation-text">
+            <h3>Account Created Successfully!</h3>
+            <p>Your account has been created and is awaiting admin activation. You will be able to login once an administrator activates your account.</p>
+          </div>
+        </div>
+        <div class="activation-actions">
+          <a class="btn-primary" [routerLink]="['/login']">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            Back to Login
+          </a>
+        </div>
       </div>
     </form>
   </div>

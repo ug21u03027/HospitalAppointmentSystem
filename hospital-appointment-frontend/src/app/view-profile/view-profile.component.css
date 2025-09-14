@@ -1,76 +1,83 @@
 .view-profile-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #8b9cff 0%, #9a7bc7 100%);
-  padding: 2rem 0;
+  padding: 2rem 1rem;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* Header Styles */
-.page-header {
+/* Navigation Header */
+.nav-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
 }
 
-.btn-back {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  color: white;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.nav-breadcrumb {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* Button styles that match book appointment component */
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--text-primary);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--border-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-sm {
+  padding: 0.75rem 1rem;
   font-size: 0.9rem;
 }
 
-.btn-back:hover {
-  background: rgba(0, 0, 0, 0.5);
-  transform: translateY(-2px);
+/* Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.header-content h1 {
-  color: white;
+.page-header h1 {
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
   margin: 0;
 }
 
-.header-content p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.1rem;
-  margin: 0.5rem 0 0 0;
-}
-
-/* Profile Container */
+/* Profile Container - matches book appointment styling */
 .profile-container {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-/* Profile Header */
+/* Profile Header - matches patient dashboard nav bar color */
 .profile-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #1e2a38;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
   padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
 
 .profile-avatar {
-  font-size: 4rem;
-  opacity: 0.9;
+  font-size: 3rem;
+  color: #f6a100;
 }
 
 .profile-info {
@@ -78,15 +85,17 @@
 }
 
 .profile-info h2 {
-  font-size: 2rem;
-  font-weight: 600;
+  font-size: 1.8rem;
+  font-weight: 700;
   margin: 0 0 0.5rem 0;
+  color: white;
 }
 
 .role-badge {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--primary);
+  color: white;
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -111,7 +120,11 @@
 
 /* Form Styles */
 .profile-form {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
   padding: 2rem;
+  border: 1px solid var(--border-light);
 }
 
 .form-section {
@@ -140,27 +153,30 @@
 }
 
 .input-group label {
-  color: #555;
-  font-weight: 500;
+  display: block;
+  font-weight: 600;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
   font-size: 0.95rem;
 }
 
 .input-group input,
 .input-group select {
-  padding: 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   font-size: 1rem;
-  transition: all 0.3s ease;
-  background: white;
+  background: #fbfdff;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
 }
 
 .input-group input:focus,
 .input-group select:focus {
-  outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(26, 117, 255, 0.1);
+  border-color: var(--primary);
+  transform: translateY(-1px);
 }
 
 .input-group input.readonly,
@@ -193,28 +209,17 @@
 }
 
 /* Button Styles */
-.btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-}
-
+/* Button styles that match book appointment component */
 .btn-primary {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  background: var(--primary);
   color: white;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover:not(:disabled) {
+  background: var(--primary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(45, 55, 72, 0.4);
+  box-shadow: var(--shadow);
 }
 
 .btn-primary:disabled {
@@ -224,23 +229,25 @@
 }
 
 .btn-secondary {
-  background: #495057;
-  color: white;
+  background: transparent;
+  border: 1.5px solid var(--text-secondary);
+  color: var(--text-secondary);
 }
 
-.btn-secondary:hover {
-  background: #343a40;
-  transform: translateY(-2px);
+.btn-secondary:hover:not(:disabled) {
+  background: var(--border-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
 }
 
 /* Form Actions */
 .form-actions {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e0e0e0;
+  flex-wrap: wrap;
 }
 
 /* Loading and Error States */
@@ -302,17 +309,17 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .container {
-    padding: 0 0.5rem;
+  .view-profile-page {
+    padding: 1rem 0.5rem;
   }
   
-  .page-header {
+  .nav-header {
     flex-direction: column;
-    align-items: flex-start;
     gap: 1rem;
+    align-items: flex-start;
   }
   
-  .header-content h1 {
+  .page-header h1 {
     font-size: 2rem;
   }
   

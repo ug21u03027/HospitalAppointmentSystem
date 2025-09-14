@@ -8,9 +8,6 @@
           Back to Dashboard
         </button>
       </div>
-      <div class="nav-user-info">
-        <span class="page-title">Book Appointment</span>
-      </div>
     </div>
 
     <div class="page-header">
@@ -39,7 +36,7 @@
           <div class="filter-section">
             <div class="input-group">
               <label for="specialization">Filter by Specialization</label>
-              <select id="specialization" (change)="onSpecializationChange($any($event.target).value)" [value]="selectedSpecialization">
+              <select id="specialization" (change)="onSpecializationChange($any($event.target).value)" [ngModel]="selectedSpecialization">
                 <option value="">All Specializations</option>
                 <option *ngFor="let spec of specializations" [value]="spec.value">{{ spec.label }}</option>
               </select>
@@ -95,7 +92,11 @@
           <div class="form-grid">
             <div class="input-group">
               <label for="date">Appointment Date *</label>
-              <input id="date" type="date" formControlName="date" [min]="today" (change)="onDateChange()" />
+              <input id="date" type="date" formControlName="date" [min]="today" [max]="maxDate" (change)="onDateChange()" />
+              <small class="date-info">
+                <i class="fa-solid fa-info-circle"></i>
+                Appointments can be booked for the next 7 days (excluding today)
+              </small>
             </div>
             <div class="input-group">
               <label for="time">Preferred Time *</label>
