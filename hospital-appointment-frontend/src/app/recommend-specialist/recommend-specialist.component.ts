@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 interface RecommendSpecialistRequest {
   symptoms: string;
@@ -122,7 +123,7 @@ export class RecommendSpecialistComponent implements OnInit {
         });
 
         const response = await this.http.post<RecommendSpecialistResponse>(
-          `http://localhost:8080/api/patients/specialist`,
+          `${environment.apiUrl}/patients/specialist`,
           request,
           { headers }
         ).toPromise();
