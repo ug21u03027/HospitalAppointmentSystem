@@ -35,4 +35,10 @@ public class AuthController {
 
     }
 
+    //to keep the backend render app from spin off due to inactivity
+    @GetMapping("/ping")
+    public String ping() {
+        return "pong";
+    }
+
 }
