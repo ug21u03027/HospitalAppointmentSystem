@@ -53,6 +53,7 @@ public class SecurityConfig {
                         // Publicly accessible endpoints
                         .requestMatchers("/api/auth/login"
                                 , "/api/auth/register"
+                                ,"/api/auth/ping"
                                 , "/swagger-ui.html"
                                 , "/swagger-ui/**"
                                 , "/v3/api-docs/**").permitAll()
