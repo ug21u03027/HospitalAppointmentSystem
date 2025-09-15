@@ -99,7 +99,12 @@
             <artifactId>spring-dotenv</artifactId>
             <version>3.0.0</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>1.16.0</version>
+        </dependency>
+	</dependencies>
 
     <build>
         <plugins>

@@ -6,12 +6,27 @@
       <p>Welcome, {{ userName || 'Patient' }}</p>
       <small>Patient</small>
     </div>
-    <ul>
+    
+    <!-- Hamburger Menu Toggle and Logout Container -->
+    <div class="nav-controls">
+      <button class="hamburger-toggle" (click)="toggleNavMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Logout button - always visible -->
+      <a class="logout-btn" (click)="logout()" style="cursor: pointer;">🔒 Logout</a>
+    </div>
+    
+    <!-- Navigation Menu -->
+    <ul class="nav-menu" [class.hidden]="!isNavMenuOpen">
       <li><a routerLink="/patient-dashboard" class="active">📊 Dashboard</a></li>
       <li><a routerLink="/book-appointment">📅 Book Appointment</a></li>
+      <li><a routerLink="/recommend-specialist">🔍 Recommend Specialist</a></li>
       <li><a routerLink="/appointments">📋 My Appointments</a></li>
       <li><a routerLink="/profile">👤 View Profile</a></li>
-      <li><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
+      <li class="desktop-logout"><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
     </ul>
   </div>
 
@@ -29,7 +44,7 @@
           <h3>Book Appointment</h3>
           <p>Schedule a new appointment with your preferred doctor</p>
         </div>
-        <button class="action-btn" (click)="navigateToBookAppointment()">Book Now</button>
+        <button class="btn-dashboard" (click)="navigateToBookAppointment()">Book</button>
       </div>
 
       <div class="stat-card">
@@ -38,7 +53,7 @@
           <h3>My Appointments</h3>
           <p>View and manage your upcoming and past appointments</p>
         </div>
-        <button class="action-btn" (click)="navigateToAppointments()">View</button>
+        <button class="btn-dashboard" (click)="navigateToAppointments()">View</button>
       </div>
 
       <div class="stat-card">
@@ -47,7 +62,16 @@
           <h3>My Profile</h3>
           <p>View and edit your personal information</p>
         </div>
-        <button class="action-btn" (click)="navigateToProfile()">View Profile</button>
+        <button class="btn-dashboard" (click)="navigateToProfile()">View Profile</button>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🔍</div>
+        <div class="stat-info">
+          <h3>Recommend Specialist</h3>
+          <p>Get AI-powered specialist recommendations based on your symptoms</p>
+        </div>
+        <button class="btn-dashboard" (click)="navigateToRecommendSpecialist()">Recommend</button>
       </div>
 
       <div class="stat-card">
@@ -57,9 +81,15 @@
           <p>Your appointment history and statistics</p>
         </div>
         <div class="quick-info">
-          <p><strong>Upcoming:</strong> 3 appointments</p>
-          <p><strong>Doctors Consulted:</strong> 2</p>
-          <p><strong>Total Visits:</strong> 5</p>
+          <div *ngIf="isLoadingStats" class="loading-stats">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Loading stats...</span>
+          </div>
+          <div *ngIf="!isLoadingStats">
+            <p><strong>Upcoming Appointments:</strong> {{ upcomingAppointments }}</p>
+            <p><strong>Doctors Consulted:</strong> {{ doctorsConsulted }}</p>
+            <p><strong>Total Visits:</strong> {{ totalVisits }}</p>
+          </div>
         </div>
       </div>
     </div>

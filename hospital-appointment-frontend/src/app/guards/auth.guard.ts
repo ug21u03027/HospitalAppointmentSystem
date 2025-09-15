@@ -16,28 +16,12 @@ export class AuthGuard implements CanActivate {
     const role = localStorage.getItem('role');
     
     if (token && role) {
-      // User is authenticated, redirect to appropriate dashboard
-      this.redirectToDashboard(role);
-      return false; // Prevent navigation to the guarded route
+      // User is authenticated, allow access to protected routes
+      return true;
     }
     
-    // User is not authenticated, allow navigation to login
-    return true;
-  }
-
-  private redirectToDashboard(role: string): void {
-    switch (role) {
-      case 'ADMIN':
-        this.router.navigate(['/admin-dashboard']);
-        break;
-      case 'DOCTOR':
-        this.router.navigate(['/doctor-dashboard']);
-        break;
-      case 'PATIENT':
-        this.router.navigate(['/patient-dashboard']);
-        break;
-      default:
-        this.router.navigate(['/login']);
-    }
+    // User is not authenticated, redirect to login
+    this.router.navigate(['/login']);
+    return false;
   }
 }

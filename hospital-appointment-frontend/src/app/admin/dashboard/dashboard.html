@@ -6,12 +6,26 @@
       <p>Welcome, {{ userName }}</p>
       <small>Administrator</small>
     </div>
-    <ul>
+    
+    <!-- Hamburger Menu Toggle and Logout Container -->
+    <div class="nav-controls">
+      <button class="hamburger-toggle" (click)="toggleNavMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Logout button - always visible -->
+      <a class="logout-btn" (click)="logout()" style="cursor: pointer;">🔒 Logout</a>
+    </div>
+    
+    <!-- Navigation Menu -->
+    <ul class="nav-menu" [class.hidden]="!isNavMenuOpen">
       <li><a routerLink="/admin-dashboard" class="active">📊 Dashboard</a></li>
       <li><a routerLink="/manage-doctors">👨‍⚕️ Manage Doctors</a></li>
       <li><a routerLink="/manage-patients">🧑‍⚕️ Manage Patients</a></li>
       <li><a routerLink="/profile">👤 View Profile</a></li>
-      <li><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
+      <li class="desktop-logout"><a (click)="logout()" style="cursor: pointer;">🔒 Logout</a></li>
     </ul>
   </div>
 
@@ -29,7 +43,7 @@
           <h3>Doctors</h3>
           <p>Manage doctor profiles and schedules</p>
         </div>
-        <button class="action-btn" (click)="navigateDoctors()">Manage</button>
+        <button class="btn-dashboard" (click)="navigateDoctors()">Manage</button>
       </div>
 
       <div class="stat-card">
@@ -38,7 +52,7 @@
           <h3>Patients</h3>
           <p>View and manage patient records</p>
         </div>
-        <button class="action-btn" (click)="navigatePatients()">Manage</button>
+        <button class="btn-dashboard" (click)="navigatePatients()">Manage</button>
       </div>
 
       <div class="stat-card">
@@ -47,7 +61,7 @@
           <h3>Reports</h3>
           <p>View system analytics and reports</p>
         </div>
-        <button class="action-btn" disabled>Coming Soon</button>
+        <button class="btn-dashboard" disabled>Coming Soon</button>
       </div>
 
       <div class="stat-card">
@@ -56,7 +70,7 @@
           <h3>Profile</h3>
           <p>View and edit your profile information</p>
         </div>
-        <button class="action-btn" (click)="navigateToProfile()">View Profile</button>
+        <button class="btn-dashboard" (click)="navigateToProfile()">View Profile</button>
       </div>
     </div>
   </div>

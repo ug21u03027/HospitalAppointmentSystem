@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -18,6 +18,9 @@ export class DoctorDashboardComponent implements OnInit {
   userProfile: UserProfile | null = null;
   isLoading = false;
   errorMessage = '';
+  
+  // Navigation menu state
+  isNavMenuOpen: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -28,6 +31,7 @@ export class DoctorDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkAuthStatus();
+    this.initializeNavMenuState();
   }
 
   private checkAuthStatus(): void {
@@ -89,5 +93,27 @@ export class DoctorDashboardComponent implements OnInit {
 
   getSpecializationLabel(specialization: string): string {
     return this.specializationService.getSpecializationLabel(specialization);
+  }
+
+  // Initialize navigation menu state based on screen size
+  private initializeNavMenuState(): void {
+    if (typeof window !== 'undefined') {
+      // Show menu on desktop screens (width > 768px)
+      this.isNavMenuOpen = window.innerWidth > 768;
+    }
+  }
+
+  // Toggle navigation menu
+  toggleNavMenu(): void {
+    this.isNavMenuOpen = !this.isNavMenuOpen;
+  }
+
+  // Listen for window resize events
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    // If screen width is greater than 768px (desktop), show the menu
+    if (event.target.innerWidth > 768) {
+      this.isNavMenuOpen = true;
+    }
   }
 }

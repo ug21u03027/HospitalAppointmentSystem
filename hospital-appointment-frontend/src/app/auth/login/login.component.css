@@ -64,6 +64,8 @@
   transition: all 0.2s ease;
   outline: none;
   font-family: inherit;
+  height: 48px;
+  box-sizing: border-box;
 }
 
 .input-group input:focus {
@@ -85,6 +87,12 @@
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: 1.5rem;
+  height: 48px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .login-btn:hover:not(:disabled) {

@@ -21,6 +21,7 @@ export class BookAppointmentComponent implements OnInit {
   selectedSpecialization: string = '';
   userProfile: UserProfile | null = null;
   today: string = '';
+  maxDate: string = '';
   isLoading = false;
   errorMessage = '';
   successMessage = '';
@@ -49,7 +50,7 @@ export class BookAppointmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkAuthStatus();
-    this.today = new Date().toISOString().split('T')[0];
+    this.setDateConstraints();
     this.specializations = this.specializationService.getSpecializations();
     
     // Handle query parameters for rescheduling
@@ -60,12 +61,30 @@ export class BookAppointmentComponent implements OnInit {
       
       // Handle specialization pre-selection
       if (params['specialization']) {
+        console.log('Received specialization parameter:', params['specialization']);
+        console.log('Received symptoms parameter:', this.pendingSymptoms);
         this.selectedSpecialization = params['specialization'];
         // Load doctors for the selected specialization
         this.loadDoctorsBySpecialization(params['specialization']);
+        // Ensure the dropdown reflects the selected value
+        setTimeout(() => {
+          const selectElement = document.getElementById('specialization') as HTMLSelectElement;
+          if (selectElement) {
+            selectElement.value = params['specialization'];
+          }
+        }, 100);
+        // Apply pending symptoms if available
+        if (this.pendingSymptoms) {
+          this.appointmentForm.patchValue({ symptoms: this.pendingSymptoms });
+          console.log('Applied pending symptoms:', this.pendingSymptoms);
+        }
       } else if (this.pendingDoctorId) {
         // If no specialization but doctorId is provided, load all doctors
         this.loadAllDoctors();
+      } else if (this.pendingSymptoms) {
+        // If only symptoms are provided (from recommend specialist), apply them
+        this.appointmentForm.patchValue({ symptoms: this.pendingSymptoms });
+        console.log('Applied pending symptoms:', this.pendingSymptoms);
       }
     });
   }
@@ -83,6 +102,18 @@ export class BookAppointmentComponent implements OnInit {
       // Load user profile to get patient ID
       this.loadUserProfile();
     }
+  }
+
+  private setDateConstraints(): void {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 7);
+    
+    this.today = tomorrow.toISOString().split('T')[0];
+    this.maxDate = maxDate.toISOString().split('T')[0];
   }
 
   private loadUserProfile(): void {

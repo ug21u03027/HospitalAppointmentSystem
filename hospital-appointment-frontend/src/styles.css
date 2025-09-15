@@ -171,6 +171,8 @@ textarea {
   transition: all 0.2s ease;
   text-decoration: none;
   font-family: inherit;
+  height: 40px;
+  min-width: 140px;
 }
 
 .btn-primary {
@@ -187,13 +189,14 @@ textarea {
 
 .btn-secondary {
   background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  font-weight: 600;
+  border: 1.5px solid var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 .btn-secondary:hover:not(:disabled) {
   background: var(--border-light);
+  border-color: var(--primary);
+  color: var(--primary);
   transform: translateY(-1px);
 }
 
@@ -213,6 +216,65 @@ textarea {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none !important;
+}
+
+.btn-sm {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  height: 36px;
+  min-width: 120px;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--text-primary);
+  color: var(--text-primary);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--border-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-success {
+  background: var(--success);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.btn-dashboard {
+  padding: 10px 20px;
+  font-size: 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  height: 40px;
+  min-width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-dashboard:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+.btn-dashboard:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Utility Classes */

@@ -79,6 +79,8 @@
   transition: all 0.2s ease;
   outline: none;
   font-family: inherit;
+  height: 48px;
+  box-sizing: border-box;
 }
 
 .input-group input:focus,
@@ -129,7 +131,11 @@
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  height: 48px;
+  box-sizing: border-box;
+  min-width: 120px;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -147,8 +153,8 @@
 .btn-secondary {
   background: transparent;
   color: var(--text-primary);
-  border: 1px solid var(--border);
-  padding: 0.875rem 1.5rem;
+  border: 2px solid var(--border);
+  padding: 0.75rem 1.5rem;
   border-radius: var(--radius-sm);
   font-size: 1rem;
   font-weight: 600;
@@ -157,7 +163,11 @@
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  height: 48px;
+  box-sizing: border-box;
+  min-width: 120px;
 }
 
 .btn-secondary:hover {
@@ -239,6 +249,68 @@
   }
 }
 
+/* Activation Card */
+.activation-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.activation-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.activation-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--success);
+}
+
+.activation-text h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.activation-text p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 400px;
+}
+
+.activation-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.activation-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  height: 48px;
+  box-sizing: border-box;
+  min-width: 120px;
+}
+
 @media (max-width: 480px) {
   .signup-card {
     padding: 1.5rem 1rem;
@@ -246,5 +318,19 @@
   
   .signup-title {
     font-size: 1.5rem;
+  }
+  
+  .activation-card {
+    padding: 1.5rem;
+  }
+  
+  .activation-content {
+    gap: 0.75rem;
+  }
+  
+  .activation-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
   }
 }

@@ -32,26 +32,7 @@
   font-size: 1.1rem;
 }
 
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.btn-outline:hover:not(:disabled) {
-  background: var(--border-light);
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.btn-sm {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.85rem;
-}
+/* Button styles now inherit from global styles */
 
 /* Alert Messages */
 .alert {
@@ -306,17 +287,18 @@
 }
 
 .doctors-table thead {
-  background: #f8f9fa;
+  background: var(--primary);
+  color: white;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 .doctors-table th {
-  padding: 1rem 0.75rem;
+  padding: 0.75rem 0.75rem;
   text-align: center;
   font-weight: 600;
-  color: #495057;
+  color: white;
   border-bottom: 2px solid #dee2e6;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -426,4 +408,28 @@
   .doctors-table tbody {
     max-height: 250px;
   }
+}
+
+/* Date Info Styling */
+.date-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.date-info i {
+  color: var(--primary);
+}
+
+/* Date Input Styling */
+input[type="date"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
 }

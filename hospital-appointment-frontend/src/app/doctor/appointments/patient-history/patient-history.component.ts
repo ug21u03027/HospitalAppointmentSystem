@@ -206,6 +206,6 @@ export class PatientHistoryComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/doctor/doctor-dashboard']);
+    this.router.navigate(['/doctor-dashboard']);
   }
 }

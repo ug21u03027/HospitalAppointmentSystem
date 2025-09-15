@@ -1,5 +1,20 @@
-<div class="page">
-  <h1>Manage Doctors</h1>
+<div class="appointments-page">
+  <div class="container">
+    <!-- Navigation Header -->
+    <div class="nav-header">
+      <div class="nav-breadcrumb">
+        <button class="btn btn-outline btn-sm" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+          Back to Dashboard
+        </button>
+      </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="appointments-header">
+      <h1 class="appointments-title">Manage Doctors</h1>
+      <p class="appointments-subtitle">View and manage doctor profiles and schedules</p>
+    </div>
 
   <!-- Search Section -->
   <div class="search-container">
@@ -17,7 +32,8 @@
         [(ngModel)]="selectedSpecialization" 
         (change)="onSpecializationChange()"
         class="specialization-filter">
-        <option value="">All Specializations</option>
+        <option value="" disabled selected>Select Specialization</option>
+        <option value="all">All Specializations</option>
         <option *ngFor="let spec of specializations" [value]="spec.value">
           {{ spec.label }}
         </option>
@@ -149,5 +165,5 @@
     <p>Enter a name, email, or phone to search for doctors.</p>
   </div>
 
-  <button class="back" (click)="goBack()">⬅ Back to Dashboard</button>
+  </div>
 </div>

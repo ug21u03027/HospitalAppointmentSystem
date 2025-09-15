@@ -30,9 +30,10 @@
         />
       </div>
 
-      <button type="submit" class="login-btn">
-        <i class="fa-solid fa-right-to-bracket"></i>
-        Login
+      <button type="submit" class="login-btn" [disabled]="isLoading">
+        <i *ngIf="!isLoading" class="fa-solid fa-right-to-bracket"></i>
+        <i *ngIf="isLoading" class="fa-solid fa-spinner fa-spin"></i>
+        {{ isLoading ? 'Logging in...' : 'Login' }}
       </button>
 
       <div *ngIf="message" class="message" [ngClass]="messageColor === 'red' ? 'error' : 'success'">

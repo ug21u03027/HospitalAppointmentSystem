@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { AppointmentService, AppointmentDto, UserProfile } from '../services/appointment.service';
 
 @Component({
   selector: 'app-patient-dashboard',
@@ -13,11 +14,26 @@ import { AuthService } from '../services/auth.service';
 export class PatientDashboardComponent implements OnInit {
   userName: string = 'Guest';
   isLoggedIn: boolean = false;
+  
+  // Quick stats data
+  upcomingAppointments: number = 0;
+  doctorsConsulted: number = 0;
+  totalVisits: number = 0;
+  isLoadingStats: boolean = true;
+  
+  // Navigation menu state
+  isNavMenuOpen: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private appointmentService: AppointmentService
+  ) {}
 
   ngOnInit(): void {
     this.checkAuthStatus();
+    this.loadQuickStats();
+    this.initializeNavMenuState();
   }
 
   private checkAuthStatus(): void {
@@ -63,6 +79,86 @@ export class PatientDashboardComponent implements OnInit {
 
   navigateToProfile(): void {
     this.router.navigate(['/profile']);
+  }
+
+  navigateToRecommendSpecialist(): void {
+    this.router.navigate(['/recommend-specialist']);
+  }
+
+  private loadQuickStats(): void {
+    this.isLoadingStats = true;
+    
+    // First get user profile to get patient ID
+    this.appointmentService.getUserProfile().subscribe({
+      next: (profile: UserProfile) => {
+        if (profile.patientId) {
+          // Get patient appointments
+          this.appointmentService.getPatientAppointments(profile.patientId).subscribe({
+            next: (appointments: AppointmentDto[]) => {
+              this.calculateStats(appointments);
+              this.isLoadingStats = false;
+            },
+            error: (error) => {
+              console.error('Error loading appointments:', error);
+              this.isLoadingStats = false;
+            }
+          });
+        } else {
+          this.isLoadingStats = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error loading user profile:', error);
+        this.isLoadingStats = false;
+      }
+    });
+  }
+
+  private calculateStats(appointments: AppointmentDto[]): void {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Count upcoming appointments (APPROVED status and future date)
+    this.upcomingAppointments = appointments.filter(appointment => {
+      const appointmentDate = new Date(appointment.date);
+      appointmentDate.setHours(0, 0, 0, 0);
+      return appointment.status === 'APPROVED' && appointmentDate >= today;
+    }).length;
+
+    // Count unique doctors consulted (COMPLETED appointments)
+    const uniqueDoctors = new Set(
+      appointments
+        .filter(appointment => appointment.status === 'COMPLETED')
+        .map(appointment => appointment.doctorId)
+    );
+    this.doctorsConsulted = uniqueDoctors.size;
+
+    // Count total visits (COMPLETED appointments)
+    this.totalVisits = appointments.filter(appointment => 
+      appointment.status === 'COMPLETED'
+    ).length;
+  }
+
+  // Toggle navigation menu
+  toggleNavMenu(): void {
+    this.isNavMenuOpen = !this.isNavMenuOpen;
+  }
+
+  // Initialize navigation menu state based on screen size
+  private initializeNavMenuState(): void {
+    if (typeof window !== 'undefined') {
+      // Show menu on desktop screens (width > 768px)
+      this.isNavMenuOpen = window.innerWidth > 768;
+    }
+  }
+
+  // Listen for window resize events
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    // If screen width is greater than 768px (desktop), show the menu
+    if (event.target.innerWidth > 768) {
+      this.isNavMenuOpen = true;
+    }
   }
 }
 

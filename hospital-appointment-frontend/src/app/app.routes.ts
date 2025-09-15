@@ -13,28 +13,29 @@ import { DoctorDashboardComponent } from './doctor/appointments/doctor-dashboard
 import { AppointmentsComponent as DoctorAppointmentsComponent } from './doctor/appointments/appointments.component';
 import { PatientHistoryComponent } from './doctor/appointments/patient-history/patient-history.component';
 import { AuthGuard } from './guards/auth.guard';
+import { RecommendSpecialistComponent } from './recommend-specialist/recommend-specialist.component';
 
 export const routes: Routes = [
-  // Public routes
-  { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
+  // Public routes (no authentication required)
+  { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   
-  // Protected routes - Patient
-  { path: 'patient-dashboard', component: PatientDashboardComponent },
-  { path: 'book-appointment', component: BookAppointmentComponent },
-  { path: 'appointments', component: AppointmentsComponent },
-  { path: 'profile', component: ViewProfileComponent },
+  // Protected routes - Patient (require authentication)
+  { path: 'patient-dashboard', component: PatientDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'book-appointment', component: BookAppointmentComponent, canActivate: [AuthGuard] },
+  { path: 'appointments', component: AppointmentsComponent, canActivate: [AuthGuard] },
+  { path: 'recommend-specialist', component: RecommendSpecialistComponent, canActivate: [AuthGuard] },
+  { path: 'profile', component: ViewProfileComponent, canActivate: [AuthGuard] },
   
-  // Protected routes - Doctor
-  { path: 'doctor-dashboard', component: DoctorDashboardComponent },
-  { path: 'doctor/doctor-dashboard', component: DoctorDashboardComponent },
-  { path: 'doctor/appointments', component: DoctorAppointmentsComponent },
-  { path: 'doctor/patient-history', component: PatientHistoryComponent },
+  // Protected routes - Doctor (require authentication)
+  { path: 'doctor-dashboard', component: DoctorDashboardComponent, canActivate: [AuthGuard] },
+  { path: 'doctor/appointments', component: DoctorAppointmentsComponent, canActivate: [AuthGuard] },
+  { path: 'doctor/patient-history', component: PatientHistoryComponent, canActivate: [AuthGuard] },
   
-  // Protected routes - Admin
-  { path: 'admin-dashboard', component: DashboardComponent },
-  { path: 'manage-doctors', component: ManageDoctorsComponent },
-  { path: 'manage-patients', component: ManagePatientsComponent },
+  // Protected routes - Admin (require authentication)
+  { path: 'admin-dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'manage-doctors', component: ManageDoctorsComponent, canActivate: [AuthGuard] },
+  { path: 'manage-patients', component: ManagePatientsComponent, canActivate: [AuthGuard] },
   
   // Root and fallback routes
   { path: '', component: AuthCheckComponent },

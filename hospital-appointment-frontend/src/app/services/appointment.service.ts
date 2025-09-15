@@ -228,30 +228,6 @@ export class AppointmentService {
   }
 
   /**
-   * Check if a time slot is available for a doctor on a specific date
-   */
-  checkSlotAvailability(doctorId: number, date: string, time: string): Observable<boolean> {
-    const token = this.getAuthToken();
-    if (!token) {
-      return throwError(() => new Error('No authentication token found'));
-    }
-
-    return this.http.get<{ available: boolean }>(`${this.baseUrl}/appointments/check-availability`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      params: {
-        doctorId: doctorId.toString(),
-        date: date,
-        time: time
-      }
-    }).pipe(
-      map(response => response.available),
-      catchError(this.handleError.bind(this))
-    );
-  }
-
-  /**
    * Get appointments for a specific doctor
    */
   getDoctorAppointments(doctorId: number): Observable<any[]> {
@@ -265,27 +241,6 @@ export class AppointmentService {
         'Authorization': `Bearer ${token}`
       }
     }).pipe(
-      catchError(this.handleError.bind(this))
-    );
-  }
-
-  /**
-   * Update appointment status
-   */
-  updateAppointmentStatus(appointmentId: number, status: string): Observable<any> {
-    const token = this.getAuthToken();
-    if (!token) {
-      return throwError(() => new Error('No authentication token found'));
-    }
-
-    return this.http.put<any>(`${this.baseUrl}/appointments/${appointmentId}/status`, 
-      { status: status }, 
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }
-    ).pipe(
       catchError(this.handleError.bind(this))
     );
   }
